@@ -1,98 +1,65 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useEffect, useState } from "react";
+import PuzzleProvider from "@/components/PuzzleProvider";
+import PuzzleScreen from "@/components/PuzzleScreen";
+import { fetchPuzzle } from "@/lib/service";
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
+export interface CellData {
+  acrossId: number | null;
+  downId: number | null;
+  label: number | null;
+  value: string;
+  q: string;
 }
 
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
-  );
+export interface CaptionData {
+  wordId: number,
+  word: string,
+  content: string,
+  label: number,
+  acrossward: boolean
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
-  },
-});
+export interface PuzzleData {
+  grid: (CellData | null)[][];
+  captions: CaptionData[]
+}
+
+export interface Data {
+  publishDate: string;
+  puzzleData: PuzzleData;
+}
+
+export default function App() {
+
+  const [error, setError] = useState<unknown>(null)
+  const [data, setData] = useState<Data | null>(null);
+  
+  useEffect(() => {
+    getData()
+  }, [])
+
+  async function getData() {
+    try {
+      // 캐시의 maxAge(최대 수명)이 만료된 경우만 서버에 요청하고
+      // 디스크 캐시로부터 데이터를 가져옵니다
+      const d = await fetchPuzzle();
+      setData(d);
+    } catch (e) {
+      setError(e)
+    }
+  }
+
+  if (error) {
+    return <p>Error!</p>
+  }
+
+  if (!data) {
+    return <p>Loading..</p>
+  }
+
+  return (
+    <PuzzleProvider data={data}>
+      <PuzzleScreen />
+    </PuzzleProvider>
+  )
+}

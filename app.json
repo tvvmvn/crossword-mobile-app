@@ -37,6 +37,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "a93780ce-326e-44f7-9001-dc5d66608b62"
+      }
+    },
+    "owner": "tvvmvn-expo"
   }
 }
