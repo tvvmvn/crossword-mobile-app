@@ -1,0 +1,16 @@
+# 워크플로우 이름
+name: Preview Build Automation
+
+# 1. 언제 실행할 것인가? (트리거 조건)
+on:
+  push:
+    branches: ['main'] # main 브랜치에 git push 될 때
+
+# 2. 무슨 작업을 할 것인가?
+jobs:
+  build_android_apk:
+    name: Build Android Preview APK
+    type: build
+    params:
+      platform: android
+      profile: preview # eas.json의 preview 프로필 사용

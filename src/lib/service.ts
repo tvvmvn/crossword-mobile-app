@@ -1,6 +1,6 @@
 export async function fetchPuzzle() {
   
-  const res = await fetch('http://localhost:8080/api/puzzle');
+  const res = await fetch(process.env.EXPO_PUBLIC_API_URL + '/puzzle');
 
   if (!res.ok) {
     console.error(res)

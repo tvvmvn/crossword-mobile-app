@@ -89,40 +89,40 @@ export default function Board({
   }
 
   return (
-    // 10열 격자 레이아웃 (flex-row & flex-wrap)
-    <View style={tw`flex-row flex-wrap p-0.5 bg-gray-200`}>
-      {board.map((row, r) => row.map((cell, c) => (
-        // 10컬럼 렌더링을 위해 셀의 너비를 10%로 설정
-        <View
-          key={`cell-${r}-${c}`}
-          style={tw`w-[10%] aspect-square p-0.5`}
-        >
-          {cell ? (
-            <View style={tw`w-full h-full ${playing ? 'bg-white' : getCellBgColor(cell.q, cell.value)}`}>
-              <TouchableOpacity
-                style={tw`w-full h-full relative justify-center items-center ${
-                  playing ? getInputBgColor(r, c, cell.acrossId, cell.downId) 
-                  : 'bg-transparent'}`}
-                disabled={!playing}
-                onPress={() => handleClick(r, c, cell.acrossId, cell.downId)}
-              >
-                {/* 단어 번호 라벨 (좌상단 absolute) */}
-                <Text style={tw`absolute top-0.5 left-1 font-semibold text-[10px] text-gray-600`}>
-                  {cell.label}
-                </Text>
-                {/* 입력된 글자 / 정답 글자 */}
-                <Text style={tw`text-base font-bold text-black`}>
-                  {playing ? cell.q : cell.value}
-                </Text>
-              </TouchableOpacity>
+    <View style={tw`flex-col mx-2 border-t border-r border-gray-400`}>
+      {board.map((row, r) => (
+        <View key={r} style={tw`flex-row border-b border-gray-400`}>
+          {row.map((cell, c) => (
+            <View
+              key={`cell-${r}-${c}`}
+              style={tw`w-[10%] aspect-square border-l border-gray-400`}
+            >
+              {cell ? (
+                <View style={tw`w-full h-full ${playing ? 'bg-white' : getCellBgColor(cell.q, cell.value)}`}>
+                  <TouchableOpacity
+                    style={tw`w-full h-full relative justify-center items-center ${playing ? getInputBgColor(r, c, cell.acrossId, cell.downId)
+                        : 'bg-transparent'}`}
+                    disabled={!playing}
+                    onPress={() => handleClick(r, c, cell.acrossId, cell.downId)}
+                  >
+                    {/* 단어 번호 라벨 (좌상단 absolute) */}
+                    <Text style={tw`absolute top-0.5 left-1 font-semibold text-[10px] text-gray-600`}>
+                      {cell.label}
+                    </Text>
+                    {/* 입력된 글자 / 정답 글자 */}
+                    <Text style={tw`text-base font-bold text-black`}>
+                      {playing ? cell.q : cell.value}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                // 빈 배경 셀 (퍼즐 판 외곽)
+                <View style={tw`w-full h-full bg-gray-100`} />
+              )}
             </View>
-          ) : (
-            // 빈 배경 셀 (퍼즐 판 외곽)
-            <View style={tw`w-full h-full bg-gray-100`} />
-          )}
+          ))}
         </View>
-      ))
-      )}
+      ))}
     </View>
   );
 }

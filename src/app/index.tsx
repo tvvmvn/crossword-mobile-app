@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import PuzzleProvider from "@/components/PuzzleProvider";
 import PuzzleScreen from "@/components/PuzzleScreen";
 import { fetchPuzzle } from "@/lib/service";
+import { Text } from "react-native";
 
 export interface CellData {
   acrossId: number | null;
@@ -50,11 +51,11 @@ export default function App() {
   }
 
   if (error) {
-    return <p>Error!</p>
+    return <Text>Error!</Text>
   }
 
   if (!data) {
-    return <p>Loading..</p>
+    return <Text>Loading..</Text>
   }
 
   return (

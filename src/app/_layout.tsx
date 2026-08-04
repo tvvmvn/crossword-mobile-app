@@ -1,11 +1,15 @@
 import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import tw from "twrnc";
 
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={tw`flex-1`}>
+      {/* SafeAreaView: 이게 상태바(status bar) 스타일이다 */}
+      <SafeAreaView style={tw`flex-1 bg-black`}>
+        {/* 상태바 텍스트 색깔을 지정합니다. light/dark 둘 중 선택! */}
+        <StatusBar style="light" /> 
         <Stack screenOptions={{ headerShown: false }} />
       </SafeAreaView>
     </SafeAreaProvider>
