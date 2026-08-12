@@ -1,0 +1,16 @@
+name: Production Build Workflow
+
+on:
+  push:
+    # 'v'로 시작하는 모든 태그가 푸시될 때만 이 워크플로우가 켜집니다.
+    # 예: v1.0.0, v1.0.1, v2.1.0 등
+    tags:
+      - 'v*'
+
+jobs:
+  build_production_android:
+    name: Build Android Production AAB
+    type: build
+    params:
+      platform: android
+      profile: production # eas.json의 production 프로필 사용 (.aab 생성)

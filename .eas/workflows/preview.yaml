@@ -6,7 +6,7 @@ on:
   push:
     branches: ['main'] # main 브랜치에 git push 될 때
 
-# 2. 무슨 작업을 할 것인가?
+# 2. 무슨 작업을 할 것인가? eas build --plaform android --profile view
 jobs:
   build_android_apk:
     name: Build Android Preview APK

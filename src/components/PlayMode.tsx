@@ -102,7 +102,7 @@ export default function PlayMode() {
       {/* Hint / Caption */}
       <View style={tw`p-4`}>
         <Text style={tw`text-base text-gray-800`}>
-          {caption ? caption.content : "caption here"}
+          {caption ? caption.content : "여기에 힌트가 나와요"}
         </Text>
       </View>
 
@@ -115,7 +115,7 @@ export default function PlayMode() {
           style={tw`px-4 py-2 bg-black`}
           onPress={handleSubmit}
         >
-          <Text style={tw`text-white font-bold text-base`}>Done</Text>
+          <Text style={tw`text-white font-bold text-base`}>제출하기</Text>
         </TouchableOpacity>
       </View>
     </>

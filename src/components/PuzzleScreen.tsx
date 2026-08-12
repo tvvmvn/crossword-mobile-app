@@ -22,19 +22,22 @@ export default function PuzzleScreen() {
     <ScrollView style={tw`bg-white`}>
       {/* Header 영역 */}
       <View style={tw`px-2`}>
-        <Text style={tw`my-4 text-2xl font-semibold`}>
+        <Text style={tw`my-6 text-2xl font-semibold`}>
           {displayDate(publishDate)} Crossword ♥
         </Text>
+        <Text style={tw``}>매일 업데이트됩니다</Text>
       </View>
 
       {/* Main 게임 영역 (PlayMode / ResultMode) */}
-      <View style={tw`flex-1`}>
+      <View style={tw`mt-4`}>
         {playing ? <PlayMode /> : <ResultMode />}
       </View>
 
       {/* Footer 영역 */}
-      <View style={tw`p-8`}>
-        <Text style={tw`text-center`}>footer</Text>
+      <View style={tw`px-4 py-8`}>
+        <View style={tw`border-t`}>
+          <Text style={tw`text-center my-2`}>2026 &copy; crossword</Text>
+        </View>
       </View>
     </ScrollView>
   );

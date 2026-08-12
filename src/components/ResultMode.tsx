@@ -54,7 +54,7 @@ export default function ResultMode() {
         )}
         <TouchableOpacity onPress={handleClick}>
           <Text style={tw`text-blue-500 font-semibold text-base`}>
-            Try again
+            다시하기
           </Text>
         </TouchableOpacity>
       </View>
