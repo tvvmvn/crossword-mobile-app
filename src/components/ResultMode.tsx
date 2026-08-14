@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-import tw from "twrnc";
 import type { CaptionData } from "@/app";
+import { useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import tw from "twrnc";
 import Board from "./Board";
 import { usePuzzle } from "./PuzzleProvider";
 
@@ -42,18 +42,21 @@ export default function ResultMode() {
   return (
     <>
       {/* Result Message */}
-      <View style={tw`px-2 flex-row items-center gap-2 my-2`}>
+      <View style={styles.messageArea}>
         {isError() ? (
-          <Text style={tw`text-base text-black`}>
-            아쉬워요 🥲
+          <Text style={styles.message}>
+            아쉬워요🥲
           </Text>
         ) : (
-          <Text style={tw`text-base text-black`}>
-            축하합니다! 🎉
+          <Text style={styles.message}>
+            축하합니다!🎉
           </Text>
         )}
-        <TouchableOpacity onPress={handleClick}>
-          <Text style={tw`text-blue-500 font-semibold text-base`}>
+        <TouchableOpacity 
+          style={styles.retryButton}
+          onPress={handleClick}
+        >
+          <Text style={styles.retryText}>
             다시하기
           </Text>
         </TouchableOpacity>
@@ -62,21 +65,26 @@ export default function ResultMode() {
       {/* Board Result */}
       <Board playing={playing} />
 
-      {/* Caption & Answer List */}
-      <View style={tw`mt-8 p-4 bg-gray-100`}>
+      {/* Answer List */}
+      <View style={styles.answerContainer}>
         {/* Filter Buttons */}
-        <View style={tw`flex-row`}>
+        <View style={styles.filterButtonArea}>
           {FILTER_NAMES.map((name) => {
             const isActive = name === filter;
+            
             return (
               <TouchableOpacity
                 key={name}
-                style={tw`px-4 py-2 ${
-                  isActive ? "bg-black" : "bg-transparent"
-                }`}
+                style={[
+                  styles.filterButton, 
+                  isActive && styles.buttonActive
+                ]}
                 onPress={() => setFilter(name)}
               >
-                <Text style={tw`font-semibold ${isActive ? "text-white" : "text-black"}`}>
+                <Text style={[
+                  styles.filterText,
+                  isActive && styles.textActive
+                ]}>
                   {name}
                 </Text>
               </TouchableOpacity>
@@ -85,15 +93,16 @@ export default function ResultMode() {
         </View>
 
         {/* Captions List */}
-        <View style={tw`mt-2`}>
+        <View style={styles.captionList}>
           {captions.filter(FILTER_MAP[filter]).map((caption) => (
             <View 
               key={caption.wordId} 
-              style={tw`my-2`}
+              style={styles.captionItem}
             >
-              <Text style={tw`text-base text-gray-800`}>
-                <Text style={tw`font-bold`}>
-                  {caption.label} {caption.word}
+              <Text style={styles.caption}>
+                {caption.label}.{' '}
+                <Text style={styles.emphasis}>
+                   {caption.word}
                 </Text>{" "}
                 {caption.content}
               </Text>
@@ -104,3 +113,57 @@ export default function ResultMode() {
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  //
+  messageArea: {
+    marginVertical: 8,
+    paddingHorizontal: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  message: {
+    
+  },
+  retryButton: {
+
+  },
+  retryText: {
+    fontWeight: 700,
+  },
+  // 
+  answerContainer: {
+    marginTop: 16,
+    padding: 16,
+    backgroundColor: '#f1f1f1'
+  },
+  filterButtonArea: {
+    flexDirection: 'row'
+  },
+  filterButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  buttonActive: {
+    backgroundColor: '#000'
+  },
+  filterText: {
+    fontWeight: 600,
+  },
+  textActive: {
+    color: '#fff'
+  },
+  captionList: {
+    marginTop: 16,
+  },
+  captionItem: {
+    marginVertical: 8,
+  },
+  caption: {
+
+  },
+  emphasis: {
+    fontWeight: 700
+  }
+})

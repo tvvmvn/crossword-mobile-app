@@ -1,8 +1,14 @@
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Dimensions } from 'react-native';
 import tw from "twrnc";
 import { KEYS } from "../constants/keyboard";
 
+// 현재 기기의 가로/세로 폭 가져오기 (픽셀 단위)
+const vw = Dimensions.get('window').width;
+const vh = Dimensions.get('window').height;
+
+// Component props
 interface VirtualKeyboardProps {
   handleUserInput: (id: string) => void;
 }
@@ -11,36 +17,108 @@ export default function VirtualKeyboard({
   handleUserInput,
 }: VirtualKeyboardProps) {
 
-  function handleClick(keycapId: string) {
+  const onPress = (keycapId: string) => {
     handleUserInput(keycapId === "del" ? "" : keycapId);
   }
 
   return (
-    // grid-cols-20 레이아웃을 flex-row flex-wrap으로 구현
-    <View style={tw`px-2 py-4 bg-gray-200`}>
-      <View style={tw``}>
+    // 키보드 뒤에 배경
+    <View style={styles.background}>
+      {/* 키보드 */}
+      <View style={styles.layout}>
         {KEYS.map((row, r) => (
-          <View key={r} style={tw`flex-row`}>
-            {r === 1 && <View style={tw`w-[5%]`} />}
-            {r === 2 && <View style={tw`w-[15%]`} />}
+          <View 
+            key={r} 
+            style={styles.keyRows}
+          >
+            {r == 2 && <View style={styles.hiddenKey} />}
             {row.map((KEY, c) => (
-            <View 
-              key={KEY.id}
-              style={tw`${KEY.id == 'del' ? 'aspect-9/10 w-[15%]' : 'aspect-3/5 w-[10%]'} p-[1]`}
-            >
               <TouchableOpacity
-                style={tw`w-full h-full ${KEY.id == 'del' ? 'bg-red-200' : 'bg-white'} items-center justify-center`}
-                onPress={() => handleClick(KEY.id)}
+                key={KEY.id}
+                style={[
+                  styles.key, 
+                  KEY.id == 'del' ? styles.delKey : styles.alphabetKey,
+                ]}
+                onPress={() => onPress(KEY.id)}
               >
-                <Text style={tw`text-base font-semibold ${KEY.id == 'del' ? 'text-red-400' : 'text-black'}`}>
+                <Text style={[
+                  styles.keyText,
+                  KEY.id == 'del' ? styles.delText : styles.alphabetText,
+                ]}>
                   {KEY.symbol}
                 </Text>
               </TouchableOpacity>
-            </View>
             ))}
           </View>
         ))}
       </View>
     </View>
   );
+}
+
+const styles = StyleSheet.create({
+  // Background
+  background: { 
+    alignItems: 'center', 
+    paddingVertical: '4%',
+    backgroundColor: '#f1f1f1', 
+  },
+  // Keyboard Layout
+  layout: { 
+    width: 0.9 * vw, 
+    height: 0.45 * vw, 
+    flexDirection: 'column',
+    gap: '4%', // between keyboard rows
+    // borderWidth: 1, 
+  },
+  // Each row
+  keyRows: { 
+    height: '30.66666%', 
+    gap: '1%', // between keys
+    flexDirection: 'row', 
+    justifyContent: 'center', 
+  },
+  // Each Key
+  key: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  alphabetKey: {
+    width: '9.1%',
+    backgroundColor: 'white',
+  },
+  delKey: {
+    width: '14.15%',
+    backgroundColor: 'rgb(255, 171, 171)',
+  },
+  hiddenKey: {
+    width: '14.15%'
+  },
+  // Letter in Key
+  keyText: {
+
+  },
+  alphabetText: {
+    color: 'black'
+  },
+  delText: {
+    color: '#fff'
+  },
+})
+
+const keycapStyle = {
+  // common styles
+  common: {
+    justifyContent: 'center',
+    alignItems: 'center' 
+  },
+  // keycap-specific styles
+  alphabetical: {
+    width: '9.1%',
+    backgroundColor: 'white'
+  },
+  deletion: {
+    width: '14.15%',
+    backgroundColor: '#f00',
+  }
 }

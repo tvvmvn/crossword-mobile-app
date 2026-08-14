@@ -1,40 +1,41 @@
 interface KeyItem {
   id: string;
+  type: string;
   symbol: string;
 }
 
 export const KEYS: KeyItem[][] = [
   [
-    { id: 'q', symbol: 'q' },
-    { id: 'w', symbol: 'w' },
-    { id: 'e', symbol: 'e' },
-    { id: 'r', symbol: 'r' },
-    { id: 't', symbol: 't' },
-    { id: 'y', symbol: 'y' },
-    { id: 'u', symbol: 'u' },
-    { id: 'i', symbol: 'i' },
-    { id: 'o', symbol: 'o' },
-    { id: 'p', symbol: 'p' },
+    { id: 'q', type: 'alphabet', symbol: 'q' },
+    { id: 'w', type: 'alphabet', symbol: 'w' },
+    { id: 'e', type: 'alphabet', symbol: 'e' },
+    { id: 'r', type: 'alphabet', symbol: 'r' },
+    { id: 't', type: 'alphabet', symbol: 't' },
+    { id: 'y', type: 'alphabet', symbol: 'y' },
+    { id: 'u', type: 'alphabet', symbol: 'u' },
+    { id: 'i', type: 'alphabet', symbol: 'i' },
+    { id: 'o', type: 'alphabet', symbol: 'o' },
+    { id: 'p', type: 'alphabet', symbol: 'p' },
   ],
   [
-    { id: 'a', symbol: 'a' },
-    { id: 's', symbol: 's' },
-    { id: 'd', symbol: 'd' },
-    { id: 'f', symbol: 'f' },
-    { id: 'g', symbol: 'g' },
-    { id: 'h', symbol: 'h' },
-    { id: 'j', symbol: 'j' },
-    { id: 'k', symbol: 'k' },
-    { id: 'l', symbol: 'l' },
+    { id: 'a', type: 'alphabet', symbol: 'a' },
+    { id: 's', type: 'alphabet', symbol: 's' },
+    { id: 'd', type: 'alphabet', symbol: 'd' },
+    { id: 'f', type: 'alphabet', symbol: 'f' },
+    { id: 'g', type: 'alphabet', symbol: 'g' },
+    { id: 'h', type: 'alphabet', symbol: 'h' },
+    { id: 'j', type: 'alphabet', symbol: 'j' },
+    { id: 'k', type: 'alphabet', symbol: 'k' },
+    { id: 'l', type: 'alphabet', symbol: 'l' },
   ],
   [
-    { id: 'z', symbol: 'z' },
-    { id: 'x', symbol: 'x' },
-    { id: 'c', symbol: 'c' },
-    { id: 'v', symbol: 'v' },
-    { id: 'b', symbol: 'b' },
-    { id: 'n', symbol: 'n' },
-    { id: 'm', symbol: 'm' },
-    { id: 'del', symbol: '⌫' },
+    { id: 'z', type: 'alphabet', symbol: 'z' },
+    { id: 'x', type: 'alphabet', symbol: 'x' },
+    { id: 'c', type: 'alphabet', symbol: 'c' },
+    { id: 'v', type: 'alphabet', symbol: 'v' },
+    { id: 'b', type: 'alphabet', symbol: 'b' },
+    { id: 'n', type: 'alphabet', symbol: 'n' },
+    { id: 'm', type: 'alphabet', symbol: 'm' },
+    { id: 'del', type: 'delete', symbol: '⌫' },
   ]
 ]

@@ -1,8 +1,11 @@
-import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
-import tw from "twrnc";
+import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import tw, { style } from "twrnc";
 import type { CursorData, Orientation } from "./PlayMode";
 import { usePuzzle } from "./PuzzleProvider";
+
+// 현재 기기의 가로/세로 폭 가져오기 (픽셀 단위)
+const vw = Dimensions.get('window').width;
+const vh = Dimensions.get('window').height;
 
 interface BoardProps {
   playing: boolean;
@@ -17,14 +20,16 @@ export default function Board({
   cursor,
   updateCursor,
 }: BoardProps) {
+
   const { board } = usePuzzle();
 
-  function handleClick(
+  const handleClick = (
     r: number,
     c: number,
     acrossId: number | null,
     downId: number | null
-  ): void {
+  ) => {
+
     if (!updateCursor || !cursor) return;
 
     // 교차 지점을 클릭한 경우
@@ -51,78 +56,132 @@ export default function Board({
     }
   }
 
-  function getCellBgColor(q: string, value: string): string {
-    if (q === value) return "bg-blue-100";
-    return "bg-red-100";
-  }
-
-  function getInputBgColor(
-    r: number,
-    c: number,
-    acrossId: number | null,
-    downId: number | null
-  ): string {
-    
-    if (!cursor) return "bg-transparent";
-
-    // 포커스된 셀
-    if (cursor.r === r && cursor.c === c) {
-      return "bg-yellow-200";
-    }
-    // 활성화된 가로/세로 단어 영역 셀
-    if (
-      wordId &&
-      cursor.orientation === "ACROSS" &&
-      wordId === acrossId
-    ) {
-      return "bg-yellow-100";
-    }
-    if (
-      wordId &&
-      cursor.orientation === "DOWN" &&
-      wordId === downId
-    ) {
-      return "bg-yellow-100";
-    }
-    // 나머지 셀
-    return "bg-transparent";
-  }
-
   return (
-    <View style={tw`flex-col mx-2 border-t border-r border-gray-400`}>
-      {board.map((row, r) => (
-        <View key={r} style={tw`flex-row border-b border-gray-400`}>
-          {row.map((cell, c) => (
-            <View
-              key={`cell-${r}-${c}`}
-              style={tw`w-[10%] aspect-square border-l border-gray-400`}
-            >
-              {cell ? (
-                <View style={tw`w-full h-full ${playing ? 'bg-white' : getCellBgColor(cell.q, cell.value)}`}>
+    <View style={styles.background}>
+      {/* 보드 */}
+      <View style={styles.layout}>
+        {board.map((row, r) => (
+          <View key={r}
+            style={[
+              styles.rows,
+              r > 0 && styles.rowBorder
+            ]}
+          >
+            {row.map((cell, c) => (
+              <View key={`cell-${r}-${c}`}
+                style={[
+                  styles.cell,
+                  c > 0 && styles.colBorder
+                ]}
+              >
+                {cell && (
                   <TouchableOpacity
-                    style={tw`w-full h-full relative justify-center items-center ${playing ? getInputBgColor(r, c, cell.acrossId, cell.downId)
-                        : 'bg-transparent'}`}
+                    style={[
+                      styles.input,
+                      !!(wordId && wordId === cell.acrossId) && styles.activeInput,
+                      !!(wordId && wordId === cell.downId) && styles.activeInput,
+                      (playing && cursor!.r == r && cursor!.c == c) && styles.focusedInput,
+                      (!playing && cell.q == cell.value) && styles.correct,
+                      (!playing && cell.q != cell.value) && styles.wrong,
+                    ]}
                     disabled={!playing}
                     onPress={() => handleClick(r, c, cell.acrossId, cell.downId)}
                   >
-                    {/* 단어 번호 라벨 (좌상단 absolute) */}
-                    <Text style={tw`absolute top-0.5 left-1 font-semibold text-[10px] text-gray-600`}>
+                    {/* 퀴즈 라벨*/}
+                    <Text style={styles.label}>
                       {cell.label}
                     </Text>
                     {/* 입력된 글자 / 정답 글자 */}
-                    <Text style={tw`text-base font-bold text-black`}>
+                    <Text style={styles.letter}>
                       {playing ? cell.q : cell.value}
                     </Text>
                   </TouchableOpacity>
-                </View>
-              ) : (
-                // 빈 배경 셀 (퍼즐 판 외곽)
-                <View style={tw`w-full h-full bg-gray-100`} />
-              )}
-            </View>
-          ))}
-        </View>
-      ))}
+                )}
+              </View>
+            ))}
+          </View>
+        ))}
+      </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  // background
+  background: {
+    alignItems: 'center',
+  },
+  // layout
+  layout: { 
+    width: 0.9 * vw, 
+    height: 0.9 * vw, 
+    borderWidth: 1, 
+    borderColor: '#888',
+    backgroundColor: '#f1f1f1'
+  },
+  // rows
+  rows: { 
+    flexDirection: 'row', 
+    height: '10%', 
+  },
+  rowBorder: {
+    borderTopWidth: 1,
+    borderColor: '#888'
+  },
+  // cell
+  cell: {
+    width: '10%',
+  },
+  colBorder: {
+    borderLeftWidth: 1,
+    borderColor: '#888',
+  },
+  // input
+  input: {
+    backgroundColor: 'white',
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  focusedInput: {
+    backgroundColor: 'yellow'
+  },
+  activeInput: {
+    backgroundColor: 'lightyellow'
+  },
+  correct: {
+    backgroundColor: 'rgb(189, 229, 255)'
+  },
+  wrong: {
+    backgroundColor: 'rgb(255, 200, 200)'
+  },
+  // label
+  label: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    padding: '4%',
+    fontSize: 0.02 * vw
+  },
+  // input text
+  letter: {
+
+  }
+}) 
+
+const inputStyle = StyleSheet.create({
+  // common style
+  common: {
+    backgroundColor: 'white',
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  // state-specific styles
+  focused: {},
+  active: {},
+  correct: {},
+  wrong: {}
+})

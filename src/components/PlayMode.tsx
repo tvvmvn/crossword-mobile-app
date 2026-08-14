@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import tw from "twrnc";
 import Board from "./Board";
 import VirtualKeyboard from "./Keyboard";
@@ -33,17 +33,17 @@ export default function PlayMode() {
   const wordId: number | null = getWordId();
 
   // 결과 페이지 보기 (완료 버튼 클릭 시)
-  function handleSubmit() {
+  const onPress = () => {
     gameOver();
   }
 
   // 커서의 위치/방향을 설정합니다
-  function updateCursor(r: number, c: number, orientation: Orientation) {
+  const updateCursor = (r: number, c: number, orientation: Orientation) => {
     setCursor({ r, c, orientation });
   }
 
   // 사용자 입력 처리
-  function handleUserInput(q: string): void {
+  const handleUserInput = (q: string) => {
     // 키를 클릭한 시점의 커서 상태
     const { r, c, orientation } = cursor;
 
@@ -100,24 +100,60 @@ export default function PlayMode() {
       />
 
       {/* Hint / Caption */}
-      <View style={tw`p-4`}>
-        <Text style={tw`text-base text-gray-800`}>
-          {caption ? caption.content : "여기에 힌트가 나와요"}
-        </Text>
+      <View style={styles.captionContainer}>
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+        >
+          <Text style={styles.caption}>
+            {caption ? caption.content : "여기에 힌트가 나와요"}
+            {/* Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
+            Aspernatur delectus ipsa facere quos accusamus exercitationem, 
+            porro quam sapiente esse dolor quia quibusdam alias tempora 
+            voluptatem excepturi dolores architecto nobis optio! */}
+          </Text>
+        </ScrollView>
       </View>
 
       {/* Virtual Keyboard */}
       <VirtualKeyboard handleUserInput={handleUserInput} />
 
       {/* Submit Button */}
-      <View style={tw`flex-row mt-4 px-2`}>
+      <View style={styles.submitButtonContainer}>
         <TouchableOpacity
-          style={tw`px-4 py-2 bg-black`}
-          onPress={handleSubmit}
+          style={styles.submitButton}
+          onPress={onPress}
         >
-          <Text style={tw`text-white font-bold text-base`}>제출하기</Text>
+          <Text style={styles.submitText}>
+            정답 확인
+          </Text>
         </TouchableOpacity>
       </View>
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  // Caption
+  captionContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+  },
+  caption: {
+  },
+  // Submit Button
+  submitButtonContainer: {
+    flexDirection: 'row',
+    marginTop: 16,
+    paddingHorizontal: 8,
+  },
+  submitButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: '#000'
+  },
+  submitText: {
+    color: '#fff',
+    fontWeight: 700
+  }
+})

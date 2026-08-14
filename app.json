@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "영어 단어 십자말퍼즐",
+    "name": "영단어 십자말",
     "slug": "crossword-mobile-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -12,9 +12,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#fff",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
@@ -29,7 +28,7 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
+          "backgroundColor": "#fff",
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
         }
