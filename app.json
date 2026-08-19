@@ -8,14 +8,10 @@
     "scheme": "crosswordmobileapp",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/images/icon.png"
     },
     "android": {
-      "adaptiveIcon": {
-        "backgroundColor": "#fff",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
-      },
+      "icon": "./assets/images/icon.png",
       "predictiveBackGestureEnabled": false,
       "package": "com.tvvmvnexpo.crosswordmobileapp"
     },

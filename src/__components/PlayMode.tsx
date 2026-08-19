@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Board from './Board';
 import VirtualKeyboard from './Keyboard';
+import { usePuzzle } from './PuzzleProvider';
 import Caption from './Caption';
-import { CaptionData, CellData } from '@/app';
 
 // 커서 타입: 좌표 + 방향
 export interface CursorData {
@@ -15,20 +15,13 @@ export interface CursorData {
 // 커서의 방위 타입
 export type Orientation = 'ACROSS' | 'DOWN';
 
-interface PlayModeProps {
-  board: (CellData | null)[][];
-  setBoard: any;
-  gameOver: any;
-  captions: CaptionData[];
-}
-
-export default function PlayMode({
-    board,
-    setBoard,
-    gameOver,
-    captions,
-  }: PlayModeProps) {
+export default function PlayMode() {
   
+  const { 
+    board, 
+    updateBoard, 
+    gameOver } = usePuzzle();
+
   // 커서: 좌표와 방위로 구성됩니다
   const [cursor, setCursor] = useState<CursorData>({
     r: -1,
@@ -41,7 +34,7 @@ export default function PlayMode({
 
   // 제출 버튼을 누르면 게임을 종료합니다
   function onPress(): void {
-    gameOver()
+    gameOver();
   }
 
   // 커서를 업데이트합니다
@@ -49,28 +42,15 @@ export default function PlayMode({
     setCursor({ r, c, orientation });
   }
 
-  // 가상 키보드를 통해 사용자로부터 입력받은 값을 처리합니다 (q: 입력값)
+  // 사용자 입력 처리
   function handleUserInput(q: string): void {
-    // 사용자 입력을 보드에 반영합니다
-    updateBoard(q);
-    // 커서를 이동시킵니다
-    moveCursor(q);
-  }
-
-  function updateBoard(q: string) {
-    const { r, c } = cursor;
-    const updatedBoard = board.map((row, _r) => row.map((col, _c) => {
-      if (!col) return null;
-      if (_r === r && _c === c) {
-        return { ...col, q };
-      }
-      return col;
-    }));
-    setBoard(updatedBoard);
-  }
-
-  function moveCursor(q: string) {
+    // 포커스된 커서 상태
     const { r, c, orientation } = cursor;
+
+    // 1. 보드를 새 값과 함께 업데이트합니다
+    updateBoard(r, c, q);
+
+    // 2. 커서 이동
     // 가로 퀴즈에서 삭제키를 누른 경우 왼쪽으로 이동
     if (orientation === 'ACROSS' && q === '' && isCell(r, c - 1)) {
       setCursor({ ...cursor, c: c - 1 });
@@ -113,22 +93,17 @@ export default function PlayMode({
     }
   }
 
-  // 힌트
-  const caption = captions.find((caption) => caption.wordId === wordId);
-
   return (
     <>
       {/* Board */}
       <Board
-        board={board}
-        playing={true}
         cursor={cursor}
         updateCursor={updateCursor}
         wordId={wordId}
       />
 
-      {/* Hint */}
-      <Caption caption={caption} />
+      {/* Hint / Caption */}
+      <Caption wordId={wordId} />
 
       {/* Virtual Keyboard */}
       <VirtualKeyboard handleUserInput={handleUserInput} />

@@ -1,26 +1,24 @@
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import type { CursorData, Orientation } from './PlayMode';
-import { CellData } from '@/app';
+import { usePuzzle } from './PuzzleProvider';
 
 // 현재 기기의 가로/세로 폭 가져오기 (픽셀 단위)
 const vw = Dimensions.get('window').width;
 const vh = Dimensions.get('window').height;
 
 interface BoardProps {
-  board: (CellData | null)[][];
-  playing: boolean;
   cursor?: CursorData; // ?: undefined일 수도 있어
   updateCursor?: (r: number, c: number, orientation: Orientation) => void;
   wordId?: number | null;
 }
 
 export default function Board({
-    board,
-    playing,
-    wordId,
-    cursor,
-    updateCursor,
-  }: BoardProps) {
+  wordId,
+  cursor,
+  updateCursor,
+}: BoardProps) {
+
+  const { board, playing } = usePuzzle();
 
   // 셀 클릭: 커서의 좌표와 방향을 설정합니다
   function onPress (

@@ -1,12 +1,11 @@
-import React from "react";
+import { useBoardStorage } from '@/lib/hooks';
+import { Image } from 'expo-image';
+import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import tw from "twrnc";
 import PlayMode from "./PlayMode";
-import { usePuzzle } from "./PuzzleProvider";
 import ResultMode from "./ResultMode";
-import { Ionicons } from '@expo/vector-icons'; // 아이콘 패키지 선택
-import Feather from '@expo/vector-icons/Feather';
 import ShareButton from "./ShareButton";
+import { CaptionData, CellData } from '@/app';
 
 function displayDate(publishDate: string): string {
   // "2026-08-01" -> [2026, 8, 1]
@@ -17,16 +16,61 @@ function displayDate(publishDate: string): string {
   return `${month}월 ${day}일 ${WEEKDAYS[date.getDay()]}요일`;
 }
 
-export default function PuzzleScreen() {
+interface PuzzleScreenProps {
+  publishDate: string;
+  fetchedBoard: (CellData | null)[][];
+  captions: CaptionData[];
+}
+
+export default function PuzzleScreen({
+    publishDate,
+    fetchedBoard,
+    captions,
+  }: PuzzleScreenProps) {
   
-  const { publishDate, playing } = usePuzzle();
+  // 보드 데이터
+  const { board, setBoard } = useBoardStorage(publishDate, fetchedBoard);
+  // 플레이 상태
+  const [playing, setPlaying] = useState<boolean>(true);
+  
+  // 게임을 재시작합니다
+  function gameStart() {
+    // data(불변 객체)를 활용해 보드를 초기화합니다.
+    setBoard(fetchedBoard);
+    // 다시 플레이모드로 돌아갑니다
+    setPlaying(true);
+  }
+
+  const playMode = (
+    <PlayMode
+      board={board}
+      setBoard={setBoard}
+      captions={captions}
+      gameOver={gameOver}
+    />
+  )
+
+  const resultMode = (
+    <ResultMode
+      board={board}
+      captions={captions}
+      gameStart={gameStart}
+    />
+  )
+
+  function gameOver() {
+    setPlaying(false)
+  }
 
   return (
     <ScrollView style={styles.background}>
-      {/* Header 영역 */}
+      {/* 머리말 */}
       <View style={styles.header}>
         <View style={styles.logoArea}>
-          <Feather name="plus-square" size={24} color="white" />
+          <Image
+            source={require('@/assets/images/react-logo.png')}
+            style={styles.logo}
+          />
           <Text style={styles.logoText}>
             영단어 십자말퀴즈 
           </Text>
@@ -34,6 +78,7 @@ export default function PuzzleScreen() {
         <ShareButton />
       </View>
 
+      {/* 제목 및 날짜 */}
       <View style={styles.titleContainer}>
         <Text style={styles.title}>
           {displayDate(publishDate)} 퀴즈 ☕️
@@ -43,18 +88,17 @@ export default function PuzzleScreen() {
         </Text>
       </View>
 
-      {/* Main 게임 영역 (PlayMode / ResultMode) */}
+      {/* 메인: 게임 영역*/}
       <View style={styles.modeContainer}>
-        {playing ? <PlayMode /> : <ResultMode />}
+        {playing ? playMode : resultMode}
       </View>
 
-      {/* Footer 영역 */}
+      {/* 꼬리말 영역 */}
       <View style={styles.footer}>
         <Text style={styles.footerText}>
           퍼즐에 사용된 단어들은 <Text style={styles.italic}>Oxford</Text> 사전이 선정한{' '}
-          <Text style={styles.emphasis}>가장 실용적인 단어 5000개</Text>
-          로부터 추출되었습니다. 랜덤으로 단어가 추출되기 때문에 가끔
-          중복된 단어가 나올 있습니다. (자주보면 잘 외워지겠죠!)
+          <Text style={styles.emphasis}>가장 실용적인 영어 단어 5000개 (American Oxford 5000 by CEFR level)</Text>
+          로부터 추출되었습니다. 랜덤으로 단어가 추출되기 때문에 중복된 단어가 나올 있습니다. 
         </Text>
       </View>
     </ScrollView>
@@ -64,7 +108,7 @@ export default function PuzzleScreen() {
 const styles = StyleSheet.create({
   // 
   background: {
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   //
   header: {
@@ -79,6 +123,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+  },
+  logo: { 
+    borderWidth: 1, 
+    width: 24, 
+    height: 24, 
+    resizeMode: 'contain' 
   },
   logoText: {
     fontWeight: 700,

@@ -1,35 +1,10 @@
-import { useEffect, useState } from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
-import { fetchPuzzle } from "@/lib/service";
-import PuzzleArea from "@/components/PuzzleArea";
-import { Image } from "expo-image";
-import ShareButton from "@/components/ShareButton";
-
-export interface CellData {
-  acrossId: number | null;
-  downId: number | null;
-  label: number | null;
-  value: string;
-  q: string;
-}
-
-export interface CaptionData {
-  wordId: number,
-  word: string,
-  content: string,
-  label: number,
-  acrossward: boolean
-}
-
-export interface PuzzleData {
-  grid: (CellData | null)[][];
-  captions: CaptionData[]
-}
-
-export interface Data {
-  publishDate: string;
-  puzzleData: PuzzleData;
-}
+import Feather from '@expo/vector-icons/Feather';
+import { Image } from 'expo-image';
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import PlayMode from "./PlayMode";
+import { usePuzzle } from "./PuzzleProvider";
+import ResultMode from "./ResultMode";
+import ShareButton from "./ShareButton";
 
 function displayDate(publishDate: string): string {
   // "2026-08-01" -> [2026, 8, 1]
@@ -40,58 +15,13 @@ function displayDate(publishDate: string): string {
   return `${month}월 ${day}일 ${WEEKDAYS[date.getDay()]}요일`;
 }
 
-export default function Index() {
-
-  const [error, setError] = useState<unknown>(null);
-  // 서버로부터 받은 데이터. 앱이 실행되는 동안 불변성을 유지해야 합니다
-  const [publishDate, setPublishDate] = useState<string>('');
-  const [initialBoard, setInitialBoard] = useState<(CellData | null)[][]>([]);
-  const [captions, setCaptions] = useState<CaptionData[]>([]);
-  const [pending, setPending] = useState(true);
+export default function PuzzleScreen() {
   
-  useEffect(() => {
-    getData()
-  }, [])
-
-  async function getData() {
-    try {
-      // 캐시의 maxAge(최대 수명)이 만료된 경우 또는 캐시가 삭제된 경우에만
-      // 서버에 요청하고 아니라면 디스크 캐시로부터 데이터를 가져옵니다
-      const d : Data = await fetchPuzzle();
-
-      setInitialBoard(d.puzzleData.grid);
-      setCaptions(d.puzzleData.captions);
-      setPublishDate(d.publishDate);
-
-    } catch (e) {
-      setError(e)
-    } finally {
-      setPending(false)
-    }
-  }
-
-  if (error) {
-    return (
-      <View style={styles.error}>
-        <Text>Error!</Text>
-      </View>
-    )
-  }
-
-  if (pending) {
-    return (
-      <View style={styles.loading}>
-        <ActivityIndicator 
-          size="large" 
-          color="#000" 
-        />
-      </View>
-    )
-  }
+  const { publishDate, playing } = usePuzzle();
 
   return (
     <ScrollView style={styles.background}>
-      {/* 머리말 */}
+      {/* Header 영역 */}
       <View style={styles.header}>
         <View style={styles.logoArea}>
           <Image
@@ -99,13 +29,12 @@ export default function Index() {
             style={styles.logo}
           />
           <Text style={styles.logoText}>
-            영단어 십자말퀴즈
+            영단어 십자말퀴즈 
           </Text>
         </View>
         <ShareButton />
       </View>
 
-      {/* 제목 및 날짜 */}
       <View style={styles.titleContainer}>
         <Text style={styles.title}>
           {displayDate(publishDate)} 퀴즈 ☕️
@@ -115,21 +44,17 @@ export default function Index() {
         </Text>
       </View>
 
-      {/* 메인: 게임 영역*/}
-      <View style={styles.puzzleContainer}>
-        <PuzzleArea 
-          initialBoard={initialBoard}
-          captions={captions}
-          publishDate={publishDate}
-        />
+      {/* Main 게임 영역 (PlayMode / ResultMode) */}
+      <View style={styles.modeContainer}>
+        {playing ? <PlayMode /> : <ResultMode />}
       </View>
 
-      {/* 꼬리말 영역 */}
+      {/* Footer 영역 */}
       <View style={styles.footer}>
         <Text style={styles.footerText}>
           퍼즐에 사용된 단어들은 <Text style={styles.italic}>Oxford</Text> 사전이 선정한{' '}
           <Text style={styles.emphasis}>가장 실용적인 영어 단어 5000개 (American Oxford 5000 by CEFR level)</Text>
-          로부터 추출되었습니다. 랜덤으로 단어가 추출되기 때문에 중복된 단어가 나올 있습니다.
+          로부터 추출되었습니다. 랜덤으로 단어가 추출되기 때문에 중복된 단어가 나올 있습니다. 
         </Text>
       </View>
     </ScrollView>
@@ -137,14 +62,6 @@ export default function Index() {
 }
 
 const styles = StyleSheet.create({
-  error: {
-    backgroundColor: '#fff'
-  },
-  loading: {
-    backgroundColor: '#fff',
-    // flex: 1,
-    // justifyContent: 'center',
-  },
   // 
   background: {
     backgroundColor: '#fff',
@@ -187,7 +104,7 @@ const styles = StyleSheet.create({
 
   },
   //
-  puzzleContainer: {
+  modeContainer: {
     marginTop: 16,
   },
   //

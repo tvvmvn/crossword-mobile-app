@@ -1,7 +1,8 @@
-import type { CaptionData, CellData } from '@/app';
+import type { CaptionData } from '@/app';
 import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Board from './Board';
+import { usePuzzle } from './PuzzleProvider';
 
 interface FilterMap {
   가로: (caption: CaptionData) => boolean;
@@ -17,22 +18,18 @@ type FilterName = '가로' | '세로';
 
 const FILTER_NAMES: FilterName[] = Object.keys(FILTER_MAP) as FilterName[];
 
-interface ResultModeProps {
-  board: (CellData | null) [][];
-  captions: CaptionData[];
-  gameStart: any;
-}
+export default function ResultMode() {
 
-export default function ResultMode({
-    board,
-    captions,
-    gameStart,
-  }: ResultModeProps) {
+  const { 
+    board, 
+    captions, 
+    playing, 
+    gameStart } = usePuzzle();
 
   const [filter, setFilter] = useState<FilterName>('가로');
 
   function onPress() {
-    gameStart()
+    gameStart();
   }
 
   const isError = board.flat()
@@ -63,10 +60,7 @@ export default function ResultMode({
       </View>
 
       {/* 채점된 보드 */}
-      <Board 
-        board={board} 
-        playing={false}
-      />
+      <Board />
 
       {/* 답지 부분 */}
       <View style={styles.answerContainer}>
