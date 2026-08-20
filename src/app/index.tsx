@@ -1,9 +1,9 @@
+import PuzzleModule from "@/components/PuzzleModule";
+import ShareButton from "@/components/ShareButton";
+import { getTodayPuzzle } from "@/lib/service";
+import { Image } from "expo-image";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
-import { fetchPuzzle } from "@/lib/service";
-import PuzzleArea from "@/components/PuzzleArea";
-import { Image } from "expo-image";
-import ShareButton from "@/components/ShareButton";
 
 export interface CellData {
   acrossId: number | null;
@@ -44,10 +44,7 @@ export default function Index() {
 
   const [error, setError] = useState<unknown>(null);
   // 서버로부터 받은 데이터. 앱이 실행되는 동안 불변성을 유지해야 합니다
-  const [publishDate, setPublishDate] = useState<string>('');
-  const [initialBoard, setInitialBoard] = useState<(CellData | null)[][]>([]);
-  const [captions, setCaptions] = useState<CaptionData[]>([]);
-  const [pending, setPending] = useState(true);
+  const [data, setData] = useState<Data | null>(null);
   
   useEffect(() => {
     getData()
@@ -55,30 +52,22 @@ export default function Index() {
 
   async function getData() {
     try {
-      // 캐시의 maxAge(최대 수명)이 만료된 경우 또는 캐시가 삭제된 경우에만
-      // 서버에 요청하고 아니라면 디스크 캐시로부터 데이터를 가져옵니다
-      const d : Data = await fetchPuzzle();
-
-      setInitialBoard(d.puzzleData.grid);
-      setCaptions(d.puzzleData.captions);
-      setPublishDate(d.publishDate);
-
+      const d : Data = await getTodayPuzzle();
+      setData(d);
     } catch (e) {
       setError(e)
-    } finally {
-      setPending(false)
-    }
+    } 
   }
 
   if (error) {
     return (
       <View style={styles.error}>
-        <Text>Error!</Text>
+        <Text>문제가 발생했습니다. 앱을 재실행해보세요</Text>
       </View>
     )
   }
 
-  if (pending) {
+  if (!data) {
     return (
       <View style={styles.loading}>
         <ActivityIndicator 
@@ -95,7 +84,7 @@ export default function Index() {
       <View style={styles.header}>
         <View style={styles.logoArea}>
           <Image
-            source={require('@/assets/images/react-logo.png')}
+            source={require('@/assets/images/logo.png')}
             style={styles.logo}
           />
           <Text style={styles.logoText}>
@@ -108,7 +97,7 @@ export default function Index() {
       {/* 제목 및 날짜 */}
       <View style={styles.titleContainer}>
         <Text style={styles.title}>
-          {displayDate(publishDate)} 퀴즈 ☕️
+          {displayDate(data.publishDate)} 퀴즈 ☕️
         </Text>
         <Text style={styles.subtitle}>
           매일 업데이트됩니다 💪🏻
@@ -117,10 +106,10 @@ export default function Index() {
 
       {/* 메인: 게임 영역*/}
       <View style={styles.puzzleContainer}>
-        <PuzzleArea 
-          initialBoard={initialBoard}
-          captions={captions}
-          publishDate={publishDate}
+        <PuzzleModule 
+          initialBoard={data.puzzleData.grid}
+          captions={data.puzzleData.captions}
+          publishDate={data.publishDate}
         />
       </View>
 
@@ -138,12 +127,14 @@ export default function Index() {
 
 const styles = StyleSheet.create({
   error: {
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    flex: 1,
+    padding: 16,
   },
   loading: {
     backgroundColor: '#fff',
-    // flex: 1,
-    // justifyContent: 'center',
+    flex: 1,
+    justifyContent: 'center',
   },
   // 
   background: {
@@ -151,12 +142,12 @@ const styles = StyleSheet.create({
   },
   //
   header: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#000'
+    padding: 4,
+    borderBottomWidth: 2,
+    borderColor: '#f1f1f1',
   },
   logoArea: {
     flexDirection: 'row',
@@ -164,18 +155,16 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   logo: { 
-    borderWidth: 1, 
     width: 24, 
     height: 24, 
     resizeMode: 'contain' 
   },
   logoText: {
     fontWeight: 700,
-    color: '#fff'
   },
   // 
   titleContainer: {
-    marginTop: 16,
+    marginTop: 32,
     paddingHorizontal: 8,
     gap: 8
   },

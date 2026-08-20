@@ -18,7 +18,7 @@ export default function RootLayout() {
 
 const styles = StyleSheet.create({
   safeAreaView: {
-    // backgroundColor: '#fff',
+    backgroundColor: '#000',
     flex: 1
   },
 })

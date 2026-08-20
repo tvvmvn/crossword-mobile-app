@@ -10,7 +10,7 @@ interface PuzzleAreaProps {
   publishDate: string;
 }
 
-export default function PuzzleArea({
+export default function PuzzleModule({
     initialBoard,
     captions,
     publishDate,
