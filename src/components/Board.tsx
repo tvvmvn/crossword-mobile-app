@@ -1,13 +1,13 @@
+import { BoardData } from '@/app';
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import type { CursorData, Orientation } from './PlayMode';
-import { CellData } from '@/app';
 
 // 현재 기기의 가로/세로 폭 가져오기 (픽셀 단위)
 const vw = Dimensions.get('window').width;
 const vh = Dimensions.get('window').height;
 
 interface BoardProps {
-  board: (CellData | null)[][];
+  board: BoardData;
   playing: boolean;
   cursor?: CursorData; // ?: undefined일 수도 있어
   updateCursor?: (r: number, c: number, orientation: Orientation) => void;
@@ -31,7 +31,6 @@ export default function Board({
   ) {
     // 기본 방향은 가로로 지정합니다
     let orientation: Orientation = 'ACROSS';
-
     // 교차 지점을 클릭한 경우
     if (acrossId && downId) {
       // 가로 상태에서 같은 칸을 다시 클릭한 경우 세로로 전환합니다
@@ -46,7 +45,7 @@ export default function Board({
     } else if (downId) {
       orientation = 'DOWN';
     }
-
+    // 커서 업데이트
     updateCursor!(r, c, orientation);
   }
 
@@ -55,20 +54,24 @@ export default function Board({
       acrossId: number | null, 
       downId: number | null
     ) {
+    // 게임을 처음/오랜만에 열었을 때 스타일링이 필요없어
     if (!wordId) return;
-    
+    // 포커스중인 셀
     if (cursor!.r == r && cursor!.c == c) {
       return styles.focusedInput;
     }
+    // 활성화된 셀 (포커스중인 셀 주변)
     if (wordId == acrossId || wordId == downId) {
       return styles.activeInput;
     }
   }
 
+  // 채점 결과 스타일링
   function styleResultCell(q: string, value: string) {
-    if (q == value) {
+    if (q == value) { // 맞췄지롱
       return styles.correct;
-    }
+    } 
+    // 틀림ㅠ.ㅠ
     return styles.wrong;
   }
 
@@ -181,19 +184,3 @@ const styles = StyleSheet.create({
 
   }
 }) 
-
-const inputStyle = StyleSheet.create({
-  // common style
-  common: {
-    backgroundColor: 'white',
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  // state-specific styles
-  focused: {},
-  active: {},
-  correct: {},
-  wrong: {}
-})

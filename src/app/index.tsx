@@ -1,3 +1,4 @@
+import AdMobBanner from "@/components/AdMobBanner";
 import PuzzleModule from "@/components/PuzzleModule";
 import ShareButton from "@/components/ShareButton";
 import { getTodayPuzzle } from "@/lib/service";
@@ -13,6 +14,8 @@ export interface CellData {
   q: string;
 }
 
+export type BoardData = (CellData | null)[][];
+
 export interface CaptionData {
   wordId: number,
   word: string,
@@ -22,7 +25,7 @@ export interface CaptionData {
 }
 
 export interface PuzzleData {
-  grid: (CellData | null)[][];
+  grid: BoardData;
   captions: CaptionData[]
 }
 
@@ -94,6 +97,11 @@ export default function Index() {
         <ShareButton />
       </View>
 
+      {/* 상단 배너 광고 */}
+      <View style={styles.admobContainer}>
+        <AdMobBanner />
+      </View>
+
       {/* 제목 및 날짜 */}
       <View style={styles.titleContainer}>
         <Text style={styles.title}>
@@ -107,7 +115,7 @@ export default function Index() {
       {/* 메인: 게임 영역*/}
       <View style={styles.puzzleContainer}>
         <PuzzleModule 
-          initialBoard={data.puzzleData.grid}
+          defaultBoard={data.puzzleData.grid}
           captions={data.puzzleData.captions}
           publishDate={data.publishDate}
         />
@@ -146,8 +154,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 4,
-    borderBottomWidth: 2,
-    borderColor: '#f1f1f1',
+    backgroundColor: '#f1f1f1',
   },
   logoArea: {
     flexDirection: 'row',
@@ -163,8 +170,11 @@ const styles = StyleSheet.create({
     fontWeight: 700,
   },
   // 
+  admobContainer: {
+    marginTop: 16,
+  },
   titleContainer: {
-    marginTop: 32,
+    marginTop: 16,
     paddingHorizontal: 8,
     gap: 8
   },

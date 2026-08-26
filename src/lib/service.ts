@@ -7,7 +7,7 @@ export async function getTodayPuzzle() {
   // URL 예시: /puzzles/2026-08-20
   const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/puzzles/${date}`);
 
-  // 오류 발생! (상태 200이 아님)
+  // 오류 발생! (상태 2XX이 아님)
   if (!res.ok) {
     console.error(res)
     throw new Error('Something is broken');

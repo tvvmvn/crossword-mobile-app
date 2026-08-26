@@ -1,9 +1,15 @@
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { KEYS } from '../constants/keyboard';
 
 // 현재 기기의 가로/세로 폭 가져오기 (픽셀 단위)
 const vw = Dimensions.get('window').width;
 const vh = Dimensions.get('window').height;
+
+// 키보드
+export const KEYBOARD: string[][] = [
+  ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
+  ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
+  ['z', 'x', 'c', 'v', 'b', 'n', 'm', '']
+] as const;
 
 // Component props
 interface VirtualKeyboardProps {
@@ -14,35 +20,30 @@ export default function VirtualKeyboard({
     handleUserInput,
   }: VirtualKeyboardProps) {
 
-  // 사용자가 키보드 키를 눌렀을 때
-  function onPress(keycapId: string) {
-    handleUserInput(keycapId === 'del' ? '' : keycapId);
-  }
-
   return (
     // 키보드 뒤에 배경
     <View style={styles.background}>
       {/* 키보드 */}
       <View style={styles.layout}>
-        {KEYS.map((row, r) => (
+        {KEYBOARD.map((row, r) => (
           <View key={r} style={styles.keyRows}>
-            {/* 3열에서 레이아웃을 위해 만든 가상의 키 */}
+            {/* 3열에서 레이아웃을 위해 만든 가상의 왼쪽 시프트 키 */}
             {r == 2 && <View style={styles.hiddenKey} />}
-            {/* 키캡 렌더링 */}
-            {row.map((KEY, c) => (
+            {/* 키 렌더링 */}
+            {row.map((key) => (
               <TouchableOpacity
-                key={KEY.id}
+                key={key}
                 style={[
                   styles.key, 
-                  KEY.id == 'del' ? styles.delKey : styles.alphabetKey,
+                  key === '' ? styles.delKey : styles.alphabetKey,
                 ]}
-                onPress={() => onPress(KEY.id)}
+                onPress={() => handleUserInput(key)}
               >
                 <Text style={[
                   styles.keyText,
-                  KEY.id == 'del' ? styles.delText : styles.alphabetText,
+                  key === '' ? styles.delText : styles.alphabetText,
                 ]}>
-                  {KEY.symbol}
+                  {key || '⌫'}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -65,8 +66,7 @@ const styles = StyleSheet.create({
     width: 0.94 * vw, 
     height: 0.47 * vw, 
     flexDirection: 'column',
-    gap: '4%', // between keyboard rows
-    // borderWidth: 1, 
+    gap: '4%', // between KEYBOARD rows
   },
   // Each row
   keyRows: { 
@@ -102,20 +102,3 @@ const styles = StyleSheet.create({
     color: '#fff'
   },
 })
-
-const keycapStyle = {
-  // common styles
-  common: {
-    justifyContent: 'center',
-    alignItems: 'center' 
-  },
-  // keycap-specific styles
-  alphabetical: {
-    width: '9.1%',
-    backgroundColor: 'white'
-  },
-  deletion: {
-    width: '14.15%',
-    backgroundColor: '#f00',
-  }
-}

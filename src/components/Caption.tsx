@@ -1,10 +1,13 @@
 import { useEffect, useRef } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
 import { CaptionData } from "@/app";
 
 interface CaptionProps {
   caption?: CaptionData;
 }
+
+const vw = Dimensions.get('window').width;
+
 
 export default function Caption({ caption }: CaptionProps) {
 
@@ -22,13 +25,20 @@ export default function Caption({ caption }: CaptionProps) {
 
   return (
     <View style={styles.captionContainer}>
+      <View style={styles.iconContainer}>
+        <Text>💁🏻‍♂️{' '}</Text>
+      </View>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{
+          alignItems: 'center',
+        }}
         ref={scrollViewRef}
       >
-        <Text style={styles.caption}>
-          💁🏻‍♂️ {caption ? caption.content : '여기에 힌트가 나와요'}
+        <Text>
+          {caption? caption.content : '여기에 힌트가 나와요'}
+          {/* Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit, commodi quidem! Alias doloribus natus voluptatibus quaerat illo possimus ad quos at! Dolorum eos similique odit iste, deleniti ea mollitia consequuntur? */}
         </Text>
       </ScrollView>
     </View>
@@ -38,9 +48,11 @@ export default function Caption({ caption }: CaptionProps) {
 const styles = StyleSheet.create({
   captionContainer: {
     paddingHorizontal: 16,
-    paddingVertical: 16,
+    flexDirection: 'row',
+    height: 0.125 * vw,
   },
-  caption: {
+  iconContainer: {
+    justifyContent: 'center',
   },
 })
 

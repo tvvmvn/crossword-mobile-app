@@ -1,78 +1,60 @@
-import { CaptionData, CellData } from '@/app';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect, useState } from 'react';
+import { BoardData, CaptionData } from '@/app';
+import useAdMobInterstitial from '@/lib/hooks/useAdMobInterstitial';
+import useBoard from '@/lib/hooks/useBoard';
+import { useState } from 'react';
 import PlayMode from "./PlayMode";
 import ResultMode from "./ResultMode";
 
-interface PuzzleAreaProps {
-  initialBoard: (CellData | null)[][];
+interface PuzzleModuleProps {
+  defaultBoard: BoardData;
   captions: CaptionData[];
   publishDate: string;
 }
 
 export default function PuzzleModule({
-    initialBoard,
+    defaultBoard,
     captions,
     publishDate,
-  }: PuzzleAreaProps) {
+  }: PuzzleModuleProps) {
   
-  // 보드 데이터
-  const [board, setBoard] = useState<(CellData | null)[][]>([]);
-  // 초기화 여부
-  const [boardFilled, setBoardFilled] = useState(false);
+  // 보드 Hook
+  const { 
+    board, 
+    updateBoard,
+    clearBoard } = useBoard(defaultBoard, publishDate);
   // 플레이 상태
   const [playing, setPlaying] = useState<boolean>(true);
+  // 틈새 광고 호출기
+  const adMobInterstitial = useAdMobInterstitial();
 
-  // 1. 보드 채우기: 앱을 켰을 때 수행합니다
-  useEffect(() => {
-    fillBoard();
-    // setTimeout(() => fillBoard(), 1000)
-    async function fillBoard() {
-      // 오늘자 퍼즐을 비동기 저장소에서 가져옵니다
-      const savedPuzzle = await AsyncStorage.getItem(publishDate);
-      // 옵션1. 오늘 중으로 다시 앱에 접속하면 저장소로부터 풀던 퍼즐을 가져옵니다
-      if (savedPuzzle) {
-        setBoard(JSON.parse(savedPuzzle!));
-      // 옵션2. 오늘 처음으로 접속한 경우 또는 저장소를 비운 경우 initialBoard(불변)로부터 퍼즐을 가져옵니다
-      } else {
-        setBoard(initialBoard);
-      }
-      setBoardFilled(true);
-    }
-  }, [])
-
-  // 2. 게임의 진행 과정 기록: 게임의 진행 과정을 저장소와 동기화합니다.
-  useEffect(() => {
-    // 보드를 채운 이후부터 동기화 기능이 활성화됩니다
-    if (boardFilled) {
-      synchronizeStorage();
-    }
-    async function synchronizeStorage() {
-      await AsyncStorage.setItem(publishDate, JSON.stringify(board));
-    }
-  }, [board]);
-  
   // 게임을 재시작합니다
   function gameStart() {
-    // data(불변 객체)를 활용해 보드를 초기화합니다.
-    setBoard(initialBoard);
-    // 다시 플레이모드로 돌아갑니다
+    // 보드를 초기화합니다.
+    clearBoard();
+    // 플레이 모드로 돌아갑니다
     setPlaying(true);
   }
 
+  // 게임을 종료합니다
   function gameOver() {
-    setPlaying(false)
+    // 정답을 공개하기 전에 틈새 광고를 보여줍니다
+    adMobInterstitial();
+    // * 여기서 사용자가 광고를 끕니다 (CLOSED 리스너 작동) *
+    // 플레이 모드로 돌아갑니다
+    setPlaying(false);
   }
 
+  // 플레이 모드
   const playMode = (
     <PlayMode
       board={board}
-      setBoard={setBoard}
+      updateBoard={updateBoard}
       captions={captions}
       gameOver={gameOver}
     />
   )
 
+  // 정답지 모드
   const resultMode = (
     <ResultMode
       board={board}
@@ -81,5 +63,7 @@ export default function PuzzleModule({
     />
   )
 
+  // 정답지 모드로 넘어갈 때, playmode가 언마운트됩니다
+  // 따라서 플레이 모드로 돌아오면 state는 초기 상태입니다.
   return playing ? playMode : resultMode
 }

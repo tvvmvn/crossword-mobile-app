@@ -6,8 +6,8 @@ export default function ShareButton() {
   const onShare = async (): Promise<void> => {
     try {
       await Share.share({
-        message: '친구에게 공유할 텍스트나 링크 내용! (예: https://example.com)',
-        title: '공유하기 제목', // iOS 전용 상단 제목
+        message: 'https://play.google.com/store/apps/details?id=com.tvvmvnexpo.crosswordmobileapp',
+        title: '영단어 십자말 다운로드 주소!', // iOS 전용 상단 제목
       });
     } catch (error: any) {
       console.log(error.message)
