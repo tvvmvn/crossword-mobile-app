@@ -1,163 +1,165 @@
-import { BoardData } from '@/app';
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import type { CursorData, Orientation } from './PlayMode';
+import React from 'react';
+import { Dimensions, GestureResponderEvent, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 // 현재 기기의 가로/세로 폭 가져오기 (픽셀 단위)
 const vw = Dimensions.get('window').width;
 const vh = Dimensions.get('window').height;
 
-interface BoardProps {
-  board: BoardData;
-  playing: boolean;
-  cursor?: CursorData; // ?: undefined일 수도 있어
-  updateCursor?: (r: number, c: number, orientation: Orientation) => void;
-  wordId?: number | null;
+interface BoardGridProps {
+  boardGridPressed?: () => void;
+  children: React.ReactNode;
 }
 
-export default function Board({
-    board,
-    playing,
-    wordId,
-    cursor,
-    updateCursor,
-  }: BoardProps) {
+interface BoardRowProps {
+  children: React.ReactNode;
+}
 
-  // 셀 클릭: 커서의 좌표와 방향을 설정합니다
-  function onPress (
-    r: number,
-    c: number,
-    acrossId: number | null,
-    downId: number | null
-  ) {
-    // 기본 방향은 가로로 지정합니다
-    let orientation: Orientation = 'ACROSS';
-    // 교차 지점을 클릭한 경우
-    if (acrossId && downId) {
-      // 가로 상태에서 같은 칸을 다시 클릭한 경우 세로로 전환합니다
-      if (
-        cursor!.orientation == 'ACROSS' &&
-        r === cursor!.r && 
-        c === cursor!.c 
-      ) {
-        orientation = 'DOWN';
-      }
-    // 세로 퀴즈에 속한 칸을 클릭한 경우
-    } else if (downId) {
-      orientation = 'DOWN';
-    }
-    // 커서 업데이트
-    updateCursor!(r, c, orientation);
-  }
+interface BlackCellProps {}
 
-  function styleWorkingCell(
-      r: number, c: number, 
-      acrossId: number | null, 
-      downId: number | null
-    ) {
-    // 게임을 처음/오랜만에 열었을 때 스타일링이 필요없어
-    if (!wordId) return;
-    // 포커스중인 셀
-    if (cursor!.r == r && cursor!.c == c) {
-      return styles.focusedInput;
-    }
-    // 활성화된 셀 (포커스중인 셀 주변)
-    if (wordId == acrossId || wordId == downId) {
-      return styles.activeInput;
-    }
-  }
+interface WhiteCellProps {
+  label: number | null;
+  focused?: boolean;
+  active?: boolean;
+  q?: string;
+  value?: string;
+  correct?: boolean;
+  whiteCellPressed?: () => void; 
+  playing: boolean;
+}
 
-  // 채점 결과 스타일링
-  function styleResultCell(q: string, value: string) {
-    if (q == value) { // 맞췄지롱
-      return styles.correct;
-    } 
-    // 틀림ㅠ.ㅠ
-    return styles.wrong;
+// 보드 그리드
+export function BoardGrid({ 
+    boardGridPressed, 
+    children 
+  }: BoardGridProps) {
+
+  function onPress() {
+    console.log('BoardGrid clicked');
+    // 함수가 undefined가 아닐 때만 안전하게 호출하도록 ?. 연산자를 붙여줍니다. 
+    // 함수가 undefined면 실행을 건너뛰고 에러를 내지 않습니다.
+    boardGridPressed?.();
   }
 
   return (
-    <View style={styles.background}>
-      {/* 보드 */}
-      <View style={styles.layout}>
-        {board.map((row, r) => (
-          <View key={r} style={[styles.rows, r > 0 && styles.rowBorder]}>
-            {row.map((cell, c) => {
-
-              const wrap = (child: any) => (
-                <View key={`cell${r}${c}`} style={[styles.cell, c > 0 && styles.colBorder]}>
-                  {child}
-                </View>
-              )
-              
-              if (!cell) return wrap(null);
-
-              const { label, q, value, acrossId, downId } = cell;
-
-              return wrap(
-                <TouchableOpacity
-                  style={[
-                    styles.input,
-                    playing ? styleWorkingCell(r, c, acrossId, downId)
-                      : styleResultCell(q, value)
-                  ]}
-                  disabled={!playing}
-                  onPress={playing ? () => onPress(r, c, acrossId, downId) : undefined}
-                >
-                  {/* 퀴즈 라벨*/}
-                  <Text style={styles.label}>
-                    {label}
-                  </Text>
-                  {/* 입력된 글자 / 정답 글자 */}
-                  <Text style={styles.letter}>
-                    {playing ? q : value}
-                  </Text>
-                </TouchableOpacity>
-              )
-            })}
-          </View>
-        ))}
-      </View>
-    </View>
-  );
+    <Pressable 
+      style={styles.grid}
+      onPress={onPress}
+    >
+      {children}
+    </Pressable>
+  )
 }
 
+// 보드 행
+export function BoardRow({ children }: BoardRowProps) {
+  return (
+    <View style={styles.row}>
+      {children}
+    </View>
+  )
+}
+
+// 검은 칸
+export function BlackCell() {
+  return (
+    <View style={styles.blackCell} />
+  )
+}
+
+// 흰 칸
+export function WhiteCell({
+    label,
+    focused,
+    active,
+    q,
+    value,
+    correct,
+    whiteCellPressed,
+    playing,
+}: WhiteCellProps) {
+
+  function styleWorkingCell() {
+    if (focused) {
+      return styles.focusedInput;
+    } else if (active) {
+      return styles.activeInput;
+    } 
+  }
+
+  function styleResultCell() {
+    if (correct) {
+      return styles.correct;
+    } else {
+      return styles.wrong;
+    }
+  }
+
+  function onPress(e: GestureResponderEvent) {
+    e.stopPropagation();
+    whiteCellPressed!();
+  }
+
+  return (
+    <TouchableOpacity
+      style={[
+        styles.whiteCell,
+        playing ? styleWorkingCell() : styleResultCell(),
+      ]}
+      onPress={playing ? (e) => onPress(e) : undefined}
+      disabled={!playing}
+    >
+      {/* 퀴즈 라벨*/}
+      {label && (
+        <Text style={styles.label}>
+          {label}
+        </Text>
+      )}
+      {/* 입력된 글자 / 정답 글자 */}
+      <Text style={styles.letter}>
+        {playing ? q : value}
+      </Text>
+    </TouchableOpacity>
+  )
+}
+
+const size = '9.1%';
+const gap = '1%';
+
 const styles = StyleSheet.create({
-  // background
-  background: {
-    alignItems: 'center',
-  },
-  // layout
-  layout: { 
-    width: 0.94 * vw, 
-    height: 0.94 * vw, 
-    borderWidth: 1, 
-    borderColor: '#aaa',
-    backgroundColor: '#f1f1f1'
+  grid: { 
+    width: vw,
+    height: vw,
+    // 본인의 넓이 기준
+    padding: 8,
+    // 본인의 넓이 기준
+    gap: gap,
   },
   // rows
-  rows: { 
+  row: { 
     flexDirection: 'row', 
-    height: '10%', 
-  },
-  rowBorder: {
-    borderTopWidth: 1,
-    borderColor: '#aaa'
+    // 부모의 높이 기준
+    height: size,
+    // 부모의 높이 기준
+    gap: gap,
   },
   // cell
-  cell: {
-    width: '10%',
+  blackCell: {
+    // 부모의 넓이 기준
+    width: size,
   },
-  colBorder: {
-    borderLeftWidth: 1,
-    borderColor: '#aaa',
-  },
-  // input
-  input: {
-    backgroundColor: 'white',
-    width: '100%',
-    height: '100%',
+  // whiteCell
+  whiteCell: {
+    // 부모의 넓이 기준
+    width: size,
     justifyContent: 'center',
-    alignItems: 'center'
+    // borderRightWidth: 2,
+    // borderBottomWidth: 2,
+    // borderTopWidth: 2,
+    // borderLeftWidth: 2,
+    borderWidth: 1,
+    // boxShadow: '0 0 8px #ddd',
+    borderColor: '#ddd',
+    alignItems: 'center',
   },
   focusedInput: {
     backgroundColor: 'yellow'
@@ -176,10 +178,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 0,
-    padding: '4%',
+    paddingLeft: '5%',
     fontSize: 0.02 * vw
   },
-  // input text
+  // whiteCell text
   letter: {
 
   }

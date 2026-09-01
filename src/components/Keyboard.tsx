@@ -1,4 +1,5 @@
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import * as Haptics from 'expo-haptics';
 
 // 현재 기기의 가로/세로 폭 가져오기 (픽셀 단위)
 const vw = Dimensions.get('window').width;
@@ -20,71 +21,74 @@ export default function VirtualKeyboard({
     handleUserInput,
   }: VirtualKeyboardProps) {
 
+  function onPress(key: string) {
+    Haptics.selectionAsync();
+    handleUserInput(key);
+  }
+
   return (
-    // 키보드 뒤에 배경
-    <View style={styles.background}>
-      {/* 키보드 */}
-      <View style={styles.layout}>
-        {KEYBOARD.map((row, r) => (
-          <View key={r} style={styles.keyRows}>
-            {/* 3열에서 레이아웃을 위해 만든 가상의 왼쪽 시프트 키 */}
-            {r == 2 && <View style={styles.hiddenKey} />}
-            {/* 키 렌더링 */}
-            {row.map((key) => (
-              <TouchableOpacity
-                key={key}
-                style={[
-                  styles.key, 
-                  key === '' ? styles.delKey : styles.alphabetKey,
-                ]}
-                onPress={() => handleUserInput(key)}
-              >
-                <Text style={[
-                  styles.keyText,
-                  key === '' ? styles.delText : styles.alphabetText,
-                ]}>
-                  {key || '⌫'}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        ))}
-      </View>
+    <View style={styles.layout}>
+      {KEYBOARD.map((row, r) => (
+        <View key={r} style={styles.keyRows}>
+          {/* 3열에서 레이아웃을 위해 만든 가상의 왼쪽 시프트 키 */}
+          {r == 2 && <View style={styles.hiddenKey} />}
+          {/* 키 렌더링 */}
+          {row.map((key) => (
+            <TouchableOpacity
+              key={key}
+              style={[
+                styles.key,
+                key === '' ? styles.delKey : styles.alphabetKey,
+              ]}
+              onPress={() => onPress(key)}
+            >
+              <Text style={[
+                styles.keyText,
+                key === '' ? styles.delText : styles.alphabetText,
+              ]}>
+                {key || '⌫'}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      ))}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  // Background
-  background: { 
-    alignItems: 'center', 
-    paddingVertical: '4%',
-    backgroundColor: '#f1f1f1', 
-  },
   // Keyboard Layout
   layout: { 
-    width: 0.94 * vw, 
-    height: 0.47 * vw, 
+    width: vw, 
+    height: 0.5 * vw, 
+    paddingHorizontal: 8,
+    paddingVertical: 16,
     flexDirection: 'column',
-    gap: '4%', // between KEYBOARD rows
+    // 본인의 높이 기준
+    gap: '4%', 
+    backgroundColor: '#eee'
   },
   // Each row
   keyRows: { 
     height: '30.66666%', 
-    gap: '1%', // between keys
+    // 본인의 넓이 기준
+    gap: '1%', 
     flexDirection: 'row', 
     justifyContent: 'center', 
   },
   // Each Key
   key: {
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    borderRadius: 4
   },
   alphabetKey: {
+    // 부모의 넓이 기준
     width: '9.1%',
-    backgroundColor: 'white',
+    backgroundColor: '#fff',
   },
   delKey: {
+    // 부모의 넓이 기준
     width: '14.15%',
     backgroundColor: 'rgb(255, 171, 171)',
   },

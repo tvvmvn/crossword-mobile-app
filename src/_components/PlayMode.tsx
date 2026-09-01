@@ -1,7 +1,7 @@
 import { BoardData, CaptionData } from '@/app';
 import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { BlackCell, BoardGrid, BoardRow, WhiteCell } from './Board';
+import Board from './Board';
 import Caption from './Caption';
 import VirtualKeyboard from './Keyboard';
 
@@ -130,46 +130,19 @@ export default function PlayMode({
   return (
     <>
       {/* Board */}
-      <BoardGrid 
-        boardGridPressed={() => setCursor({ ...cursor, r: -1, c: -1})}
-      >
-        {board.map((row, r) => (
-          <BoardRow key={r}>
-            {row.map((cell, c) => {
-
-              if (!cell) {
-                return (
-                  <BlackCell key={c} />
-                )
-              }
-
-              return (
-                <WhiteCell
-                  key={c}
-                  label={cell.label}
-                  focused={r === cursor.r && c === cursor.c}
-                  active={
-                    !!wordIdFromCursor() &&
-                    (board[r][c]!.acrossId === wordIdFromCursor() ||
-                    board[r][c]!.downId === wordIdFromCursor())
-                  }
-                  q={cell.q}
-                  whiteCellPressed={() => updateCursor(r, c)}
-                  playing={true}
-                />
-              )
-            })}
-          </BoardRow>
-        ))}
-      </BoardGrid>
+      <Board
+        board={board}
+        cursor={cursor}
+        updateCursor={updateCursor}
+        wordId={wordIdFromCursor()}
+        playing={true}
+      />
 
       {/* Hint */}
       <Caption caption={caption} />
 
       {/* Virtual Keyboard */}
-      <View style={styles.keyboardContainer}>
-        <VirtualKeyboard handleUserInput={handleUserInput} />
-      </View>
+      <VirtualKeyboard handleUserInput={handleUserInput} />
 
       {/* Submit Button */}
       <View style={styles.submitButtonContainer}>
@@ -188,9 +161,6 @@ export default function PlayMode({
 
 // Submit Button
 const styles = StyleSheet.create({
-  keyboardContainer: {
-    marginTop: 16,
-  },
   submitButtonContainer: {
     flexDirection: 'row',
     marginTop: 16,
@@ -199,8 +169,7 @@ const styles = StyleSheet.create({
   submitButton: {
     paddingHorizontal: 16,
     paddingVertical: 8,
-    backgroundColor: '#000',
-    borderRadius: 4,
+    backgroundColor: '#000'
   },
   submitText: {
     color: '#fff',

@@ -87,6 +87,7 @@ export default function Index() {
       <View style={styles.header}>
         <View style={styles.logoArea}>
           <Image
+            contentFit='contain'
             source={require('@/assets/images/logo.png')}
             style={styles.logo}
           />
@@ -154,7 +155,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 4,
-    backgroundColor: '#f1f1f1',
+    borderBottomWidth: 2,
+    borderColor: '#eee',
   },
   logoArea: {
     flexDirection: 'row',
@@ -164,7 +166,6 @@ const styles = StyleSheet.create({
   logo: { 
     width: 24, 
     height: 24, 
-    resizeMode: 'contain' 
   },
   logoText: {
     fontWeight: 700,
@@ -176,7 +177,7 @@ const styles = StyleSheet.create({
   titleContainer: {
     marginTop: 16,
     paddingHorizontal: 8,
-    gap: 8
+    gap: 8,
   },
   title: {
     fontSize: 24,

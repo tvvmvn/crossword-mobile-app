@@ -1,4 +1,4 @@
-import { BoardData } from "@/app";
+import { BoardData, CellData } from "@/app";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 

@@ -25,31 +25,44 @@ export default function Caption({ caption }: CaptionProps) {
 
   return (
     <View style={styles.captionContainer}>
-      <View style={styles.iconContainer}>
-        <Text>💁🏻‍♂️{' '}</Text>
+      <View style={styles.captionInner}>
+        <View style={styles.iconContainer}>
+          <Text>💁🏻‍♀️{' '}</Text>
+        </View>
+        <ScrollView
+          horizontal
+          // showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{
+            // alignItems: 'center',
+          }}
+          ref={scrollViewRef}
+          style={{ 
+            paddingVertical: 12, 
+            borderWidth: 1, 
+            borderColor: 'transparent',
+          }}
+        >
+          <Text>
+            {caption? caption.content : '여기에 힌트가 나와요'}
+            {/* Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit, commodi quidem! Alias doloribus natus voluptatibus quaerat illo possimus ad quos at! Dolorum eos similique odit iste, deleniti ea mollitia consequuntur? */}
+          </Text>
+        </ScrollView>
       </View>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{
-          alignItems: 'center',
-        }}
-        ref={scrollViewRef}
-      >
-        <Text>
-          {caption? caption.content : '여기에 힌트가 나와요'}
-          {/* Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit, commodi quidem! Alias doloribus natus voluptatibus quaerat illo possimus ad quos at! Dolorum eos similique odit iste, deleniti ea mollitia consequuntur? */}
-        </Text>
-      </ScrollView>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   captionContainer: {
-    paddingHorizontal: 16,
+    marginTop: 16,
+    paddingHorizontal: 8,
+  },
+  captionInner: {
     flexDirection: 'row',
-    height: 0.125 * vw,
+    backgroundColor: '#eee',
+    borderLeftWidth: 4,
+    borderColor: '#999',
+    paddingHorizontal: 8,
   },
   iconContainer: {
     justifyContent: 'center',
