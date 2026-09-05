@@ -9,7 +9,7 @@ on:
 # 2. 무슨 작업을 할 것인가? eas build --plaform android --profile development
 jobs:
   build_android_apk:
-    name: Build Android Preview APK
+    name: Build Android Development APK
     type: build
     params:
       platform: android

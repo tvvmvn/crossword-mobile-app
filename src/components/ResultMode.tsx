@@ -1,6 +1,5 @@
 import type { CaptionData, CellData } from '@/app';
-import { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { BlackCell, BoardGrid, BoardRow, WhiteCell } from './Board';
 import Catalogue from './Catalogue';
 
@@ -38,14 +37,14 @@ export default function ResultMode({
               축하합니다!🎉
             </Text>
           )}
-          <TouchableOpacity 
+          <Pressable 
             style={styles.retryButton}
             onPress={onPress}
           >
             <Text style={styles.retryText}>
               다시하기
             </Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
 
@@ -64,8 +63,7 @@ export default function ResultMode({
                   key={c}
                   label={cell.label}
                   value={cell.value}
-                  correct={cell.q === cell.value}
-                  playing={false}
+                  styleKey={cell.q === cell.value ? 'correct' : 'wrong'}
                 />
               )
             })}

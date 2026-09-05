@@ -9,7 +9,7 @@ export default function AdMobBanner() {
   }
 
   const onAdFailedToLoad = (err: unknown) => {
-    console.error('[배너 광고] 광고를 가져오지 못했습니다: ', err);
+    console.error('[banner] 광고를 가져오지 못했습니다: ', err);
   }
 
   return (

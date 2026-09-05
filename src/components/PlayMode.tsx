@@ -1,6 +1,6 @@
 import { BoardData, CaptionData } from '@/app';
 import { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { BlackCell, BoardGrid, BoardRow, WhiteCell } from './Board';
 import Caption from './Caption';
 import VirtualKeyboard from './Keyboard';
@@ -143,19 +143,26 @@ export default function PlayMode({
                 )
               }
 
+              const getStyleKey = () => {
+                if (r === cursor.r && c === cursor.c) {
+                  return 'focused'
+                } else if (
+                  !!wordIdFromCursor() && (
+                  board[r][c]!.acrossId === wordIdFromCursor() ||
+                  board[r][c]!.downId === wordIdFromCursor())
+                ) {
+                  return 'active'
+                }
+                return 'white';
+              }
+
               return (
                 <WhiteCell
                   key={c}
                   label={cell.label}
-                  focused={r === cursor.r && c === cursor.c}
-                  active={
-                    !!wordIdFromCursor() &&
-                    (board[r][c]!.acrossId === wordIdFromCursor() ||
-                    board[r][c]!.downId === wordIdFromCursor())
-                  }
-                  q={cell.q}
+                  value={cell.q}
+                  styleKey={getStyleKey()}
                   whiteCellPressed={() => updateCursor(r, c)}
-                  playing={true}
                 />
               )
             })}
@@ -173,14 +180,14 @@ export default function PlayMode({
 
       {/* Submit Button */}
       <View style={styles.submitButtonContainer}>
-        <TouchableOpacity
+        <Pressable
           style={styles.submitButton}
           onPress={onPress}
         >
           <Text style={styles.submitText}>
             정답 확인
           </Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </>
   );

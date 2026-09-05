@@ -1,6 +1,6 @@
 import { CaptionData } from "@/app";
 import { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 interface FilterMap {
   가로: (caption: CaptionData) => boolean;
@@ -35,7 +35,7 @@ export default function Catalogue({
           const isActive = name === filter;
 
           return (
-            <TouchableOpacity
+            <Pressable
               key={name}
               style={[
                 styles.filterButton,
@@ -49,7 +49,7 @@ export default function Catalogue({
               ]}>
                 {name}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           )
         })}
       </View>

@@ -50,17 +50,16 @@ export default function Index() {
   const [data, setData] = useState<Data | null>(null);
   
   useEffect(() => {
-    getData()
+    getData();
+    async function getData() {
+      try {
+        const d : Data = await getTodayPuzzle();
+        setData(d);
+      } catch (e) {
+        setError(e)
+      } 
+    }
   }, [])
-
-  async function getData() {
-    try {
-      const d : Data = await getTodayPuzzle();
-      setData(d);
-    } catch (e) {
-      setError(e)
-    } 
-  }
 
   if (error) {
     return (
@@ -95,6 +94,7 @@ export default function Index() {
             영단어 십자말퀴즈
           </Text>
         </View>
+        {/*  공유 버튼 */}
         <ShareButton />
       </View>
 

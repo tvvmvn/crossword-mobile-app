@@ -1,6 +1,6 @@
 import { BoardData, CaptionData } from '@/app';
 import { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Board from './Board';
 import Caption from './Caption';
 import VirtualKeyboard from './Keyboard';
@@ -146,14 +146,14 @@ export default function PlayMode({
 
       {/* Submit Button */}
       <View style={styles.submitButtonContainer}>
-        <TouchableOpacity
+        <Pressable
           style={styles.submitButton}
           onPress={onPress}
         >
           <Text style={styles.submitText}>
             정답 확인
           </Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </>
   );

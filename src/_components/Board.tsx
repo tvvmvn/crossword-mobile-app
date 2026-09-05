@@ -1,6 +1,6 @@
 import { BoardData } from '@/app';
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import type { CursorData, Orientation } from './PlayMode';
+import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
+import type { CursorData } from './PlayMode';
 
 // 현재 기기의 가로/세로 폭 가져오기 (픽셀 단위)
 const vw = Dimensions.get('window').width;
@@ -61,7 +61,7 @@ export default function Board({
               const { label, q, value } = cell;
 
               return (
-                <TouchableOpacity
+                <Pressable
                   key={c}
                   style={[
                     styles.input,
@@ -78,7 +78,7 @@ export default function Board({
                   <Text style={styles.letter}>
                     {playing ? q : value}
                   </Text>
-                </TouchableOpacity>
+                </Pressable>
               )
             })}
           </View>

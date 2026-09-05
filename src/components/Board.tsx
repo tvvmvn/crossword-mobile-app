@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dimensions, GestureResponderEvent, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, GestureResponderEvent, Pressable, StyleSheet, Text, View } from 'react-native';
 
 // 현재 기기의 가로/세로 폭 가져오기 (픽셀 단위)
 const vw = Dimensions.get('window').width;
@@ -18,13 +18,9 @@ interface BlackCellProps {}
 
 interface WhiteCellProps {
   label: number | null;
-  focused?: boolean;
-  active?: boolean;
-  q?: string;
-  value?: string;
-  correct?: boolean;
+  value: string;
+  styleKey: string;
   whiteCellPressed?: () => void; 
-  playing: boolean;
 }
 
 // 보드 그리드
@@ -69,44 +65,24 @@ export function BlackCell() {
 // 흰 칸
 export function WhiteCell({
     label,
-    focused,
-    active,
-    q,
     value,
-    correct,
+    styleKey,
     whiteCellPressed,
-    playing,
-}: WhiteCellProps) {
-
-  function styleWorkingCell() {
-    if (focused) {
-      return styles.focusedInput;
-    } else if (active) {
-      return styles.activeInput;
-    } 
-  }
-
-  function styleResultCell() {
-    if (correct) {
-      return styles.correct;
-    } else {
-      return styles.wrong;
-    }
-  }
-
+  }: WhiteCellProps) {
+  
+  // 셀 클릭 처리자
   function onPress(e: GestureResponderEvent) {
     e.stopPropagation();
-    whiteCellPressed!();
+    whiteCellPressed?.();
   }
 
   return (
-    <TouchableOpacity
-      style={[
+    <Pressable
+      style={[ 
         styles.whiteCell,
-        playing ? styleWorkingCell() : styleResultCell(),
+        styles[styleKey as keyof typeof styles]
       ]}
-      onPress={playing ? (e) => onPress(e) : undefined}
-      disabled={!playing}
+      onPress={(e) => onPress(e)}
     >
       {/* 퀴즈 라벨*/}
       {label && (
@@ -116,9 +92,9 @@ export function WhiteCell({
       )}
       {/* 입력된 글자 / 정답 글자 */}
       <Text style={styles.letter}>
-        {playing ? q : value}
+        {value}
       </Text>
-    </TouchableOpacity>
+    </Pressable>
   )
 }
 
@@ -161,10 +137,13 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     alignItems: 'center',
   },
-  focusedInput: {
+  white: {
+    backgroundColor: '#fff'
+  },
+  focused: {
     backgroundColor: 'yellow'
   },
-  activeInput: {
+  active: {
     backgroundColor: 'lightyellow'
   },
   correct: {

@@ -1,5 +1,5 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Share, TouchableOpacity } from 'react-native';
+import { Pressable, Share } from 'react-native';
 
 export default function ShareButton() {
 
@@ -15,8 +15,8 @@ export default function ShareButton() {
   };
 
   return (
-    <TouchableOpacity onPress={onShare}>
+    <Pressable onPress={onShare}>
       <FontAwesome name="share-alt" size={24} color="black" />
-    </TouchableOpacity>
+    </Pressable>
   );
 }

@@ -1,5 +1,5 @@
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
+import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 
 // 현재 기기의 가로/세로 폭 가져오기 (픽셀 단위)
 const vw = Dimensions.get('window').width;
@@ -34,10 +34,11 @@ export default function VirtualKeyboard({
           {r == 2 && <View style={styles.hiddenKey} />}
           {/* 키 렌더링 */}
           {row.map((key) => (
-            <TouchableOpacity
+            <Pressable
               key={key}
-              style={[
+              style={({ pressed }) => [
                 styles.key,
+                pressed && styles.pressedKey,
                 key === '' ? styles.delKey : styles.alphabetKey,
               ]}
               onPress={() => onPress(key)}
@@ -48,7 +49,7 @@ export default function VirtualKeyboard({
               ]}>
                 {key || '⌫'}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           ))}
         </View>
       ))}
@@ -105,4 +106,7 @@ const styles = StyleSheet.create({
   delText: {
     color: '#fff'
   },
+  pressedKey: {
+    opacity: 0.5
+  }
 })

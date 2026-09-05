@@ -43,7 +43,7 @@ export default function useAdMobInterstitial() {
     if (loaded) {
       interstitial.show()
     } else {
-      console.log('[틈새 광고] 광고를 가져오지 못했습니다')
+      console.log('[interstital] 광고를 가져오지 못했습니다')
     }
   }
 }

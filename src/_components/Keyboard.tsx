@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 
 // 현재 기기의 가로/세로 폭 가져오기 (픽셀 단위)
 const vw = Dimensions.get('window').width;
@@ -31,7 +31,7 @@ export default function VirtualKeyboard({
             {r == 2 && <View style={styles.hiddenKey} />}
             {/* 키 렌더링 */}
             {row.map((key) => (
-              <TouchableOpacity
+              <Pressable
                 key={key}
                 style={[
                   styles.key, 
@@ -45,7 +45,7 @@ export default function VirtualKeyboard({
                 ]}>
                   {key || '⌫'}
                 </Text>
-              </TouchableOpacity>
+              </Pressable>
             ))}
           </View>
         ))}
