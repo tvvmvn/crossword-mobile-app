@@ -14,7 +14,7 @@
       "icon": "./assets/images/icon.png",
       "predictiveBackGestureEnabled": false,
       "package": "com.tvvmvnexpo.crosswordmobileapp",
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "@GOOGLE_SERVICES_JSON"
     },
     "web": {
       "output": "static",
