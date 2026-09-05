@@ -13,7 +13,8 @@
     "android": {
       "icon": "./assets/images/icon.png",
       "predictiveBackGestureEnabled": false,
-      "package": "com.tvvmvnexpo.crosswordmobileapp"
+      "package": "com.tvvmvnexpo.crosswordmobileapp",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "output": "static",
