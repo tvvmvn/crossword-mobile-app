@@ -1,75 +1,32 @@
-import { Platform } from 'react-native';
-import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import Constants from 'expo-constants';
 
-// 1. 알림 수신 시 앱의 포그라운드 행동 설정
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-    shouldShowBanner: true,
-    shouldShowList: true,
-  }),
-});
+// 알림 권한 요청 및 로컬 알림 예약 함수
+export async function scheduleLocalNotification() {
+  // 1. 먼저 사용자에게 알림 권한을 요청합니다.
+  const { status } = await Notifications.requestPermissionsAsync();
 
-// 에러 핸들링 유틸 함수
-function handleRegistrationError(errorMessage: string): void {
-  alert(errorMessage);
-  throw new Error(errorMessage);
-}
-
-// 2. 권한 요청 및 Expo Push Token 발급 함수
-export async function registerForPushNotificationsAsync(): Promise<string | undefined> {
-  
-  if (Platform.OS === 'android') {
-    await Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#FF231F7C',
-    });
-  }
-
-  if (!Device.isDevice) {
-    handleRegistrationError('실제 기기(Physical Device)에서만 푸시 알림을 사용할 수 있습니다.');
+  if (status !== 'granted') {
+    alert('알림 권한이 허용되지 않았습니다.');
     return;
   }
 
-  const { status: existingStatus } = await Notifications.getPermissionsAsync();
-  
-  let finalStatus = existingStatus;
+  const date = new Intl.DateTimeFormat('en-CA')
+      .format(new Date());
 
-  if (existingStatus !== 'granted') {
-    const { status } = await Notifications.requestPermissionsAsync();
-    finalStatus = status;
-  }
+  // 2. 기기 내부 타이머로 알림을 예약합니다.
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: "영단어 십자말 🤓",
+      body: date + " 퍼즐을 풀어보세요!",
+      sound: true,
+    },
+    trigger: {
+      // type 지정을 통해 매일 반복되도록 설정합니다.
+      type: Notifications.SchedulableTriggerInputTypes.DAILY,
+      hour: 7,
+      minute: 0,
+    },
+  });
 
-  if (finalStatus !== 'granted') {
-    handleRegistrationError('푸시 알림 권한이 거부되었습니다.');
-    return;
-  }
-
-  // app.json의 eas.projectId 안전하게 가져오기
-  const projectId =
-    Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
-
-  if (!projectId) {
-    handleRegistrationError('EAS Project ID를 찾을 수 없습니다. app.json을 확인해주세요.');
-    return;
-  }
-
-  try {
-    const pushTokenData = await Notifications.getExpoPushTokenAsync({
-      projectId,
-    });
-    
-    console.log('Expo Push Token:', pushTokenData.data);
-    
-    return pushTokenData.data;
-
-  } catch (e: unknown) {
-    handleRegistrationError(`토큰 발급 실패: ${e}`);
-  }
+  console.log('알림이 성공적으로 예약되었습니다!');
 }

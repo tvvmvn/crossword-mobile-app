@@ -1,7 +1,7 @@
 import AdMobBanner from "@/components/AdMobBanner";
 import PuzzleModule from "@/components/PuzzleModule";
 import ShareButton from "@/components/ShareButton";
-import { registerForPushNotificationsAsync } from "@/lib/pushNotification";
+import { scheduleLocalNotification } from "@/lib/pushNotification";
 import { getTodayPuzzle } from "@/lib/service";
 import { Image } from "expo-image";
 import { useEffect, useState } from "react";
@@ -53,7 +53,7 @@ export default function Index() {
   useEffect(() => {
     getData();
 
-    registerForPushNotificationsAsync();
+    scheduleLocalNotification();
 
     async function getData() {
       try {
