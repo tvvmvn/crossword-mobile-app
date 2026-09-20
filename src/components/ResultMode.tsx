@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     fontWeight: 700,
   },
   catalogContainer: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 8,
   },
   footer: {
     padding: 16,

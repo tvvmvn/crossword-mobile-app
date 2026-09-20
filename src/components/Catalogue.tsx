@@ -54,7 +54,7 @@ export default function Catalogue({
         })}
       </View>
 
-      <View style={styles.answerContainer}>
+      <View style={styles.answerList}>
         {captions.filter(FILTER_MAP[filter]).map((caption) => (
           <View
             key={caption.wordId}
@@ -74,37 +74,39 @@ export default function Catalogue({
   )
 }
 
+const rounded = 8;
+
 const styles = StyleSheet.create({
   filterButtonArea: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   filterButton: {
-    padding: 4,
-    borderRadius: 4,
+    padding: 8,
     flex: 1,
+    borderTopLeftRadius: rounded,
+    borderTopRightRadius: rounded,
   },
   buttonActive: {
-    backgroundColor: '#000'
+    backgroundColor: '#fff'
   },
   filterText: {
     fontWeight: 600,
     textAlign: 'center'
   },
   textActive: {
-    color: '#fff'
+    // color: '#fff'
   },
-  answerContainer: {
-    marginTop: 8,
+  answerList: {
+    paddingVertical: 8,
     paddingHorizontal: 8,
     backgroundColor: '#fff',
-    borderRadius: 4,
+    borderBottomLeftRadius: rounded,
+    borderBottomRightRadius: rounded,
   },
   captionItem: {
     marginVertical: 8,
   },
-  caption: {
-
-  },
+  caption: {},
   emphasis: {
     fontWeight: 700
   }

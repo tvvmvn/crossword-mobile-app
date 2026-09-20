@@ -1,5 +1,4 @@
 import { BoardData, CaptionData } from '@/app';
-import useAdMobInterstitial from '@/lib/hooks/useAdMobInterstitial';
 import useBoard from '@/lib/hooks/useBoard';
 import { RefObject, useState } from 'react';
 import PlayMode from "./PlayMode";
@@ -27,7 +26,6 @@ export default function PuzzleModule({
     clearBoard } = useBoard(defaultBoard, publishDate);
   // 플레이 상태
   const [playing, setPlaying] = useState<boolean>(true);
-  const adMobInterstitial = useAdMobInterstitial();
 
   // 게임을 재시작합니다
   function gameStart() {
@@ -40,7 +38,7 @@ export default function PuzzleModule({
   // 게임을 종료합니다
   function gameOver() {
     // 정답을 공개하기 전에 틈새 광고를 보여줍니다
-    adMobInterstitial();
+    // adMobInterstitial();
     // * 여기서 사용자가 광고를 끕니다 (CLOSED 리스너 작동) *
     // 플레이 모드로 돌아갑니다
     setPlaying(false);

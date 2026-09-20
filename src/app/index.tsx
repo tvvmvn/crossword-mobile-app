@@ -4,7 +4,6 @@ import { Image } from "expo-image";
 import { todayDisplayDate } from "@/lib/date";
 import { getTodayPuzzle } from "@/lib/service";
 import setLocalNotification from "@/lib/setLocalNotification";
-import AdMobBanner from "@/components/AdMobBanner";
 import PuzzleModule from "@/components/PuzzleModule";
 import ShareButton from "@/components/ShareButton";
 
@@ -101,9 +100,9 @@ export default function Index() {
       </View>
 
       {/* 상단 배너 광고 */}
-      <View style={styles.admobContainer}>
+      {/* <View style={styles.admobContainer}>
         <AdMobBanner />
-      </View>
+      </View> */}
 
       {/* 제목 및 날짜 */}
       <View style={styles.titleContainer}>
