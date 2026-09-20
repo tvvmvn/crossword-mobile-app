@@ -1,20 +1,23 @@
 import { BoardData, CaptionData } from '@/app';
 import useAdMobInterstitial from '@/lib/hooks/useAdMobInterstitial';
 import useBoard from '@/lib/hooks/useBoard';
-import { useState } from 'react';
+import { RefObject, useState } from 'react';
 import PlayMode from "./PlayMode";
 import ResultMode from "./ResultMode";
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 interface PuzzleModuleProps {
   defaultBoard: BoardData;
   captions: CaptionData[];
   publishDate: string;
+  scrollViewRef: RefObject<ScrollView | null>;
 }
 
 export default function PuzzleModule({
     defaultBoard,
     captions,
     publishDate,
+    scrollViewRef,
   }: PuzzleModuleProps) {
   
   // 보드 Hook
@@ -24,7 +27,6 @@ export default function PuzzleModule({
     clearBoard } = useBoard(defaultBoard, publishDate);
   // 플레이 상태
   const [playing, setPlaying] = useState<boolean>(true);
-  // 틈새 광고 호출기
   const adMobInterstitial = useAdMobInterstitial();
 
   // 게임을 재시작합니다
@@ -60,10 +62,23 @@ export default function PuzzleModule({
       board={board}
       captions={captions}
       gameStart={gameStart}
+      scrollViewRef={scrollViewRef}
     />
   )
 
   // 정답지 모드로 넘어갈 때, playmode가 언마운트됩니다
   // 따라서 플레이 모드로 돌아오면 state는 초기 상태입니다.
-  return playing ? playMode : resultMode
+
+  return (
+    <View style={styles.container}>
+      {playing ? playMode : resultMode}
+    </View>
+  )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#eee',
+    marginTop: 16,
+  }
+})

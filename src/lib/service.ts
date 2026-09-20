@@ -1,11 +1,9 @@
+import { today } from "./date";
+
 export async function getTodayPuzzle() {
 
-  // en-CA(캐나다 영어): 날짜가 yyyy-MM-dd 형식을 가집니다
-  const date = new Intl.DateTimeFormat('en-CA')
-      .format(new Date());
-  
   // URL 예시: /puzzles/2026-08-20
-  const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/puzzles/${date}`);
+  const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/puzzles/${today}`);
 
   // 오류 발생! (상태 2XX이 아님)
   if (!res.ok) {

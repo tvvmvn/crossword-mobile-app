@@ -1,11 +1,12 @@
+import { useEffect, useRef, useState } from "react";
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Image } from "expo-image";
+import { todayDisplayDate } from "@/lib/date";
+import { getTodayPuzzle } from "@/lib/service";
+import setLocalNotification from "@/lib/setLocalNotification";
 import AdMobBanner from "@/components/AdMobBanner";
 import PuzzleModule from "@/components/PuzzleModule";
 import ShareButton from "@/components/ShareButton";
-import { scheduleLocalNotification } from "@/lib/pushNotification";
-import { getTodayPuzzle } from "@/lib/service";
-import { Image } from "expo-image";
-import { useEffect, useState } from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 
 export interface CellData {
   acrossId: number | null;
@@ -35,33 +36,27 @@ export interface Data {
   puzzleData: PuzzleData;
 }
 
-function displayDate(publishDate: string): string {
-  // "2026-08-01" -> [2026, 8, 1]
-  const [year, month, day] = publishDate.split("-").map(Number);
-  const date = new Date(year, month - 1, day);
-  const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
-
-  return `${month}월 ${day}일 ${WEEKDAYS[date.getDay()]}요일`;
-}
-
 export default function Index() {
 
   const [error, setError] = useState<unknown>(null);
   // 서버로부터 받은 데이터. 앱이 실행되는 동안 불변성을 유지해야 합니다
   const [data, setData] = useState<Data | null>(null);
-  
-  useEffect(() => {
-    getData();
+  //
+  const scrollViewRef = useRef<ScrollView>(null);
 
-    scheduleLocalNotification();
+  useEffect(() => {
+    // 퍼즐 가져오기
+    getData();
+    // 푸시 알림 설정하기
+    setLocalNotification();
 
     async function getData() {
       try {
-        const d : Data = await getTodayPuzzle();
+        const d: Data = await getTodayPuzzle();
         setData(d);
       } catch (e) {
         setError(e)
-      } 
+      }
     }
   }, [])
 
@@ -76,16 +71,19 @@ export default function Index() {
   if (!data) {
     return (
       <View style={styles.loading}>
-        <ActivityIndicator 
-          size="large" 
-          color="#000" 
+        <ActivityIndicator
+          size="large"
+          color="#000"
         />
       </View>
     )
   }
 
   return (
-    <ScrollView style={styles.background}>
+    <ScrollView
+      style={styles.background}
+      ref={scrollViewRef}
+    >
       {/* 머리말 */}
       <View style={styles.header}>
         <View style={styles.logoArea}>
@@ -95,7 +93,7 @@ export default function Index() {
             style={styles.logo}
           />
           <Text style={styles.logoText}>
-            영단어 십자말퀴즈
+            영단어 십자말
           </Text>
         </View>
         {/*  공유 버튼 */}
@@ -110,7 +108,7 @@ export default function Index() {
       {/* 제목 및 날짜 */}
       <View style={styles.titleContainer}>
         <Text style={styles.title}>
-          {displayDate(data.publishDate)} 퀴즈 ☕️
+          {todayDisplayDate()} 퀴즈 ☕️
         </Text>
         <Text style={styles.subtitle}>
           매일 업데이트됩니다 💪🏻
@@ -118,13 +116,12 @@ export default function Index() {
       </View>
 
       {/* 메인: 게임 영역*/}
-      <View style={styles.puzzleContainer}>
-        <PuzzleModule 
-          defaultBoard={data.puzzleData.grid}
-          captions={data.puzzleData.captions}
-          publishDate={data.publishDate}
-        />
-      </View>
+      <PuzzleModule
+        defaultBoard={data.puzzleData.grid}
+        captions={data.puzzleData.captions}
+        publishDate={data.publishDate}
+        scrollViewRef={scrollViewRef}
+      />
 
       {/* 꼬리말 영역 */}
       <View style={styles.footer}>
@@ -158,18 +155,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 4,
-    borderBottomWidth: 2,
-    borderColor: '#eee',
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderBottomWidth: 1,
+    borderColor: '#ddd',
   },
   logoArea: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 4,
   },
-  logo: { 
-    width: 24, 
-    height: 24, 
+  logo: {
+    width: 24,
+    height: 24,
   },
   logoText: {
     fontWeight: 700,
@@ -190,11 +188,6 @@ const styles = StyleSheet.create({
   subtitle: {
 
   },
-  //
-  puzzleContainer: {
-    marginTop: 16,
-  },
-  //
   footer: {
     paddingHorizontal: 32,
     paddingVertical: 32

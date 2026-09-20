@@ -25,46 +25,38 @@ export default function Caption({ caption }: CaptionProps) {
 
   return (
     <View style={styles.captionContainer}>
-      <View style={styles.captionInner}>
-        <View style={styles.iconContainer}>
-          <Text>💁🏻‍♀️{' '}</Text>
-        </View>
-        <ScrollView
-          horizontal
-          // showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{
-            // alignItems: 'center',
-          }}
-          ref={scrollViewRef}
-          style={{ 
-            paddingVertical: 12, 
-            borderWidth: 1, 
-            borderColor: 'transparent',
-          }}
-        >
-          <Text>
-            {caption? caption.content : '여기에 힌트가 나와요'}
-            {/* Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit, commodi quidem! Alias doloribus natus voluptatibus quaerat illo possimus ad quos at! Dolorum eos similique odit iste, deleniti ea mollitia consequuntur? */}
-          </Text>
-        </ScrollView>
+      <View style={styles.icon}>
+        <Text>💁🏻‍♀️</Text>
       </View>
+      <ScrollView
+        horizontal
+        // showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{
+          // alignItems: 'center',
+        }}
+        ref={scrollViewRef}
+        style={styles.caption}
+      >
+        <Text>
+          {caption? caption.content : '여기에 힌트가 나와요'}
+          {/* Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit, commodi quidem! Alias doloribus natus voluptatibus quaerat illo possimus ad quos at! Dolorum eos similique odit iste, deleniti ea mollitia consequuntur? */}
+        </Text>
+      </ScrollView>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   captionContainer: {
-    marginTop: 16,
-    paddingHorizontal: 8,
-  },
-  captionInner: {
     flexDirection: 'row',
-    backgroundColor: '#eee',
-    borderLeftWidth: 4,
-    borderColor: '#999',
-    paddingHorizontal: 8,
+    paddingHorizontal: 16,
+    gap: 4,
+    backgroundColor: '#fff',
   },
-  iconContainer: {
+  caption: {
+    paddingVertical: 8, 
+  },
+  icon: {
     justifyContent: 'center',
   },
 })

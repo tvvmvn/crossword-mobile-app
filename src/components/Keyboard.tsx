@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     // 본인의 높이 기준
     gap: '4%', 
-    backgroundColor: '#eee'
+    // borderWidth: 1,
   },
   // Each row
   keyRows: { 
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   },
   // Letter in Key
   keyText: {
-
+    fontWeight: 700,
   },
   alphabetText: {
     color: 'black'

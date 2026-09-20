@@ -27,7 +27,7 @@ export default function Catalogue({
   const [filter, setFilter] = useState<FilterName>('가로');
 
   return (
-    <View style={styles.answerContainer}>
+    <>
       {/* 가로/세로 필터 버튼 */}
       <View style={styles.filterButtonArea}>
         {FILTER_NAMES.map((name) => {
@@ -54,8 +54,7 @@ export default function Catalogue({
         })}
       </View>
 
-      {/* 단어 + 설명 목록 */}
-      <View style={styles.captionList}>
+      <View style={styles.answerContainer}>
         {captions.filter(FILTER_MAP[filter]).map((caption) => (
           <View
             key={caption.wordId}
@@ -71,17 +70,11 @@ export default function Catalogue({
           </View>
         ))}
       </View>
-    </View>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
-  // 
-  answerContainer: {
-    marginTop: 16,
-    padding: 16,
-    backgroundColor: '#f1f1f1'
-  },
   filterButtonArea: {
     flexDirection: 'row'
   },
@@ -100,8 +93,11 @@ const styles = StyleSheet.create({
   textActive: {
     color: '#fff'
   },
-  captionList: {
-    marginTop: 16,
+  answerContainer: {
+    marginTop: 8,
+    paddingHorizontal: 8,
+    backgroundColor: '#fff',
+    borderRadius: 4,
   },
   captionItem: {
     marginVertical: 8,

@@ -172,12 +172,12 @@ export default function PlayMode({
 
       {/* Hint */}
       <Caption caption={caption} />
-
+    
       {/* Virtual Keyboard */}
       <View style={styles.keyboardContainer}>
         <VirtualKeyboard handleUserInput={handleUserInput} />
       </View>
-
+    
       {/* Submit Button */}
       <View style={styles.submitButtonContainer}>
         <Pressable
@@ -185,7 +185,7 @@ export default function PlayMode({
           onPress={onPress}
         >
           <Text style={styles.submitText}>
-            정답 확인
+            정답 보기 →
           </Text>
         </Pressable>
       </View>
@@ -196,21 +196,18 @@ export default function PlayMode({
 // Submit Button
 const styles = StyleSheet.create({
   keyboardContainer: {
-    marginTop: 16,
   },
   submitButtonContainer: {
     flexDirection: 'row',
+    justifyContent: 'flex-end',
     marginTop: 16,
     paddingHorizontal: 8,
   },
   submitButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: '#000',
-    borderRadius: 4,
+    padding: 8,
   },
   submitText: {
-    color: '#fff',
-    fontWeight: 700
+    fontWeight: 700,
+    textAlign: 'center'
   }
 })

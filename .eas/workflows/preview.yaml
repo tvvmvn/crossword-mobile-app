@@ -1,0 +1,14 @@
+name: workflow for preview
+
+on:
+  push:
+    tags:
+      - 'v*-preview'
+
+jobs:
+  build_preview:
+    name: building crossword preview
+    type: build
+    params:
+      platform: android
+      profile: preview

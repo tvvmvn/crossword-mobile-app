@@ -14,7 +14,8 @@ interface BoardRowProps {
   children: React.ReactNode;
 }
 
-interface BlackCellProps {}
+interface BlackCellProps {
+}
 
 interface WhiteCellProps {
   label: number | null;
@@ -58,7 +59,9 @@ export function BoardRow({ children }: BoardRowProps) {
 // 검은 칸
 export function BlackCell() {
   return (
-    <View style={styles.blackCell} />
+    <View style={[
+      styles.blackCell,
+    ]} />
   )
 }
 
@@ -98,25 +101,22 @@ export function WhiteCell({
   )
 }
 
-const size = '9.1%';
-const gap = '1%';
+const size = '9.55%'; 
+const gap = '0.5%';
 
 const styles = StyleSheet.create({
   grid: { 
-    width: vw,
     height: vw,
-    // 본인의 넓이 기준
-    padding: 8,
-    // 본인의 넓이 기준
-    gap: gap,
+    padding: 12,
+    flexDirection: 'column',
+    gap,
+    // borderWidth: 1,
   },
   // rows
   row: { 
-    flexDirection: 'row', 
-    // 부모의 높이 기준
     height: size,
-    // 부모의 높이 기준
-    gap: gap,
+    flexDirection: 'row', 
+    gap,
   },
   // cell
   blackCell: {
@@ -128,17 +128,11 @@ const styles = StyleSheet.create({
     // 부모의 넓이 기준
     width: size,
     justifyContent: 'center',
-    // borderRightWidth: 2,
-    // borderBottomWidth: 2,
-    // borderTopWidth: 2,
-    // borderLeftWidth: 2,
-    borderWidth: 1,
-    // boxShadow: '0 0 8px #ddd',
-    borderColor: '#ddd',
     alignItems: 'center',
+    backgroundColor: '#fff',
   },
   white: {
-    backgroundColor: '#fff'
+
   },
   focused: {
     backgroundColor: 'yellow'
@@ -162,6 +156,6 @@ const styles = StyleSheet.create({
   },
   // whiteCell text
   letter: {
-
+    fontWeight: 700,
   }
 }) 

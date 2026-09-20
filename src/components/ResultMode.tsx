@@ -1,19 +1,26 @@
 import type { CaptionData, CellData } from '@/app';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { BlackCell, BoardGrid, BoardRow, WhiteCell } from './Board';
 import Catalogue from './Catalogue';
+import { RefObject, useEffect } from 'react';
 
 interface ResultModeProps {
   board: (CellData | null) [][];
   captions: CaptionData[];
   gameStart: any;
+  scrollViewRef: RefObject<ScrollView | null>;
 }
 
 export default function ResultMode({
     board,
     captions,
     gameStart,
+    scrollViewRef,
   }: ResultModeProps) {
+
+  useEffect(() => {
+    scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+  }, [])
 
   function onPress() {
     gameStart()
@@ -26,26 +33,17 @@ export default function ResultMode({
   return (
     <>
       {/* 결과 메시지 */}
-      <View style={styles.messageContainer}>
-        <View style={styles.message}>
-          {isError ? (
-            <Text>
-              아쉬워요🥲
-            </Text>
-          ) : (
-            <Text>
-              축하합니다!🎉
-            </Text>
-          )}
-          <Pressable 
-            style={styles.retryButton}
-            onPress={onPress}
-          >
-            <Text style={styles.retryText}>
-              다시하기
-            </Text>
-          </Pressable>
-        </View>
+      <View style={styles.message}>
+        {isError ? (
+          <Text>아쉬워요🥲</Text>
+        ) : (
+          <Text>축하합니다!🎉</Text>
+        )}
+        <Pressable onPress={onPress}>
+          <Text style={styles.retryText}>
+            다시하기
+          </Text>
+        </Pressable>
       </View>
 
       {/* 채점된 보드 */}
@@ -72,26 +70,30 @@ export default function ResultMode({
       </BoardGrid>
 
       {/* 답지 부분 */}
-      <Catalogue captions={captions} />
+      <View style={styles.catalogContainer}>
+        <Catalogue captions={captions} />
+      </View>
+
+      <View style={styles.footer} />
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  messageContainer: {
-    paddingHorizontal: 8,
-  },
   message: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f1f1f1',
     paddingHorizontal: 12,
     paddingVertical: 8,
-    gap: 8
-  },
-  retryButton: {
+    gap: 8,
   },
   retryText: {
     fontWeight: 700,
   },
+  catalogContainer: {
+    paddingHorizontal: 12,
+  },
+  footer: {
+    padding: 16,
+  }
 })
