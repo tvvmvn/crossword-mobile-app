@@ -20,5 +20,5 @@ git push origin v1.0.0
 # EAS over-the-air
 
 ```
-eas update
+eas update --environment preview
 ```

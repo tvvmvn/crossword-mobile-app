@@ -108,7 +108,7 @@ export default function Index() {
       {/* 제목 및 날짜 */}
       <View style={styles.titleContainer}>
         <Text style={styles.title}>
-          {todayDisplayDate()} 퀴즈 🍁
+          {todayDisplayDate()} 퀴즈 ☕️
         </Text>
         <Text style={styles.subtitle}>
           매일 업데이트됩니다 💪🏻
