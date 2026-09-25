@@ -20,5 +20,5 @@ git push origin v1.0.0
 # EAS over-the-air
 
 ```
-eas update --branch production --message "알림 날짜 오류 수정"
+eas update
 ```

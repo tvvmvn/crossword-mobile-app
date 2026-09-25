@@ -7,8 +7,7 @@ export async function getTodayPuzzle() {
 
   // 오류 발생! (상태 2XX이 아님)
   if (!res.ok) {
-    console.error(res)
-    throw new Error('Something is broken');
+    throw res;
   }
 
   // 성공하면 전송받은 객체를 반환합니다
