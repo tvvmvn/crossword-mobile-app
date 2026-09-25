@@ -1,9 +1,9 @@
-import { today } from "./date";
+import { getToday } from "./date";
 
 export async function getTodayPuzzle() {
-
   // URL 예시: /puzzles/2026-08-20
-  const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/puzzles/${today}`);
+  const url = `${process.env.EXPO_PUBLIC_API_URL}/puzzles/${getToday()}`;
+  const res = await fetch(url);
 
   // 오류 발생! (상태 2XX이 아님)
   if (!res.ok) {

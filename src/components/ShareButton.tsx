@@ -7,7 +7,7 @@ export default function ShareButton() {
     try {
       await Share.share({
         message: 'https://play.google.com/store/apps/details?id=com.tvvmvnexpo.crosswordmobileapp',
-        title: '영단어 십자말 다운로드 하러가기!', // iOS 전용 상단 제목
+        title: '영단어 십자말 다운로드하기', // iOS 전용 상단 제목
       });
     } catch (error: any) {
       console.log(error.message)

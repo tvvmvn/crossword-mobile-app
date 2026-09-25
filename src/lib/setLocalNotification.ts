@@ -18,8 +18,8 @@ export default async function setLocalNotification() {
   // 2. 기기 내부 타이머로 알림을 예약합니다.
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: `영단어 십자말 🤓 ${todayDisplayDate()}`,
-      body: '오늘의 퍼즐이 도착했어요!',
+      title: todayDisplayDate(),
+      body: '오늘의 퍼즐이 도착했어요! 💪🏻',
       sound: true,
     },
     identifier: 'crossword-morning-notification',

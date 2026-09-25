@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Image } from "expo-image";
-import { todayDisplayDate } from "@/lib/date";
 import { getTodayPuzzle } from "@/lib/service";
+import { todayDisplayDate } from "@/lib/date";
 import setLocalNotification from "@/lib/setLocalNotification";
 import PuzzleModule from "@/components/PuzzleModule";
 import ShareButton from "@/components/ShareButton";
