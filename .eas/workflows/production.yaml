@@ -3,7 +3,7 @@ name: workflow for production
 on:
   push:
     tags:
-      - 'v*-production'
+      - 'v*-prod'
  
 jobs:
   build_production:
